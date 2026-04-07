@@ -8,8 +8,25 @@ const app = express();
 
 const PORT = Number(process.env.PORT) || 5000;
 const DB_NAME = "skull_store";
-const JWT_SECRET = "skull-secret-key-2026";
-const MONGODB_URI = "mongodb://joelv24:joel8001@ac-n1gklk0-shard-00-00.h0g5ir2.mongodb.net:27017,ac-n1gklk0-shard-00-01.h0g5ir2.mongodb.net:27017,ac-n1gklk0-shard-00-02.h0g5ir2.mongodb.net:27017/?ssl=true&replicaSet=atlas-iq1f97-shard-0&authSource=admin&retryWrites=true&w=majority";
+
+// Environment variables with safety checks
+const MONGODB_URI = process.env.MONGODB_URI;
+const JWT_SECRET = process.env.JWT_SECRET;
+
+// Validate required environment variables
+if (!MONGODB_URI) {
+  console.error("❌ ERROR: MONGODB_URI environment variable is required");
+  console.error("Please set MONGODB_URI in your environment variables");
+  process.exit(1);
+}
+
+if (!JWT_SECRET) {
+  console.error("❌ ERROR: JWT_SECRET environment variable is required");
+  console.error("Please set JWT_SECRET in your environment variables");
+  process.exit(1);
+}
+
+console.log("✅ Environment variables validated successfully");
 
 app.use(cors());
 app.use(express.json());
@@ -22,9 +39,11 @@ async function connectDB() {
     client = new MongoClient(MONGODB_URI);
     await client.connect();
     db = client.db(DB_NAME);
-    console.log("MongoDB connected");
+    console.log("✅ MongoDB connected successfully");
+    console.log(`📊 Database: ${DB_NAME}`);
   } catch (err) {
-    console.error("MongoDB connection failed", err.message);
+    console.error("❌ MongoDB connection failed:", err.message);
+    console.error("Please check your MONGODB_URI and network connection");
     process.exit(1);
   }
 }
@@ -615,18 +634,21 @@ app.get("/api/orders", authMiddleware, async (req, res) => {
 
 function startServer() {
   const server = app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`🚀 SKULL Backend Server running successfully`);
+    console.log(`📍 Port: ${PORT}`);
+    console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`🔗 Local: http://localhost:${PORT}`);
   });
 
   server.on("error", (error) => {
     if (error.code === "EADDRINUSE") {
-      console.error(`Port ${PORT} is already in use.`);
-      console.error(`Stop the other server using port ${PORT}, or start this one with a different port.`);
-      console.error(`Example: $env:PORT=5001; node server.js`);
+      console.error(`❌ Port ${PORT} is already in use.`);
+      console.error(`💡 Solution: Stop the other server using port ${PORT}, or start with a different port`);
+      console.error(`📝 Example: PORT=5001 node server.js`);
       return;
     }
 
-    console.error("Server startup failed:", error.message);
+    console.error("❌ Server startup failed:", error.message);
   });
 }
 

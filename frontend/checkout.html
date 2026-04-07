@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - SKULL Streetwear</title>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Press+Start+2P&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --cream: #f7f3ec;
+      --parchment: #eee8d5;
+      --ink: #16120c;
+      --muted: #8a7d68;
+      --stone: #a8a8a8;
+      --grass: #5d9e3f;
+      --grass-dark: #3e7228;
+      --gold: #e8b400;
+      --danger: #d32f2f;
+      --font-body: "Nunito", sans-serif;
+      --font-display: "Anton", sans-serif;
+      --font-ui: "Press Start 2P", cursive;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      font-weight: 700;
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, rgba(93, 158, 63, 0.08), transparent 260px),
+        var(--cream);
+    }
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 28px;
+      background: rgba(247, 243, 236, 0.97);
+      border-bottom: 3px solid var(--ink);
+      box-shadow: 0 4px 0 var(--stone);
+    }
+
+    .nav-logo img {
+      height: 44px;
+      display: block;
+    }
+
+    .nav-meta {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .chip {
+      border: 2px solid var(--ink);
+      background: white;
+      padding: 10px 12px;
+      font-family: var(--font-ui);
+      font-size: 8px;
+    }
+
+    .page {
+      width: min(1220px, calc(100% - 32px));
+      margin: 28px auto 40px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 390px;
+      gap: 26px;
+      align-items: start;
+    }
+
+    .main,
+    .summary {
+      background: white;
+      border: 3px solid var(--ink);
+      box-shadow: 8px 8px 0 var(--stone);
+    }
+
+    .main {
+      padding: 24px;
+    }
+
+    .summary {
+      position: sticky;
+      top: 92px;
+      padding: 22px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      font-family: var(--font-ui);
+      font-size: 8px;
+      color: var(--grass-dark);
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+      font-family: var(--font-display);
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    h1 {
+      font-size: 56px;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      font-size: 34px;
+      margin-bottom: 8px;
+    }
+
+    .copy {
+      margin: 0 0 22px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .section {
+      padding-bottom: 28px;
+      margin-bottom: 28px;
+      border-bottom: 2px solid var(--parchment);
+    }
+
+    .section:last-of-type {
+      margin-bottom: 0;
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .field label {
+      font-family: var(--font-ui);
+      font-size: 7px;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      border: 2px solid var(--stone);
+      padding: 14px;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      resize: vertical;
+      min-height: 52px;
+      background: white;
+    }
+
+    .field textarea {
+      min-height: 110px;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      outline: none;
+      border-color: var(--grass);
+      box-shadow: 0 0 0 3px rgba(93, 158, 63, 0.12);
+    }
+
+    .error {
+      display: none;
+      color: var(--danger);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .payment-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .payment-card {
+      border: 2px solid var(--ink);
+      background: var(--parchment);
+      padding: 16px;
+      cursor: pointer;
+      display: grid;
+      gap: 8px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .payment-card.active {
+      background: #eef9ea;
+      box-shadow: 5px 5px 0 var(--ink);
+      transform: translate(-2px, -2px);
+    }
+
+    .payment-top {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .payment-top strong {
+      font-size: 17px;
+    }
+
+    .payment-top span {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .upi-box {
+      margin-top: 18px;
+      padding: 18px;
+      border: 2px dashed var(--ink);
+      background: #fbfaf7;
+      display: none;
+    }
+
+    .upi-box.show {
+      display: block;
+    }
+
+    .upi-id {
+      margin: 12px 0 16px;
+      border: 2px solid var(--ink);
+      background: white;
+      padding: 14px;
+      font-family: var(--font-ui);
+      font-size: 9px;
+      overflow-wrap: anywhere;
+    }
+
+    .upi-methods {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .upi-method {
+      border: 2px solid var(--ink);
+      background: white;
+      padding: 14px;
+      cursor: pointer;
+      text-align: center;
+      font-family: var(--font-ui);
+      font-size: 8px;
+    }
+
+    .upi-method.active {
+      background: var(--grass);
+      color: white;
+    }
+
+    .summary h2 {
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
+    .summary-items {
+      display: grid;
+      gap: 14px;
+      margin: 18px 0 22px;
+    }
+
+    .summary-item {
+      display: grid;
+      grid-template-columns: 62px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--parchment);
+    }
+
+    .summary-thumb {
+      width: 62px;
+      height: 62px;
+      border: 2px solid var(--ink);
+      background: var(--parchment);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      font-size: 26px;
+    }
+
+    .summary-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .summary-name {
+      font-weight: 900;
+      font-size: 16px;
+    }
+
+    .summary-meta {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .summary-price {
+      font-family: var(--font-display);
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      font-size: 24px;
+    }
+
+    .totals {
+      display: grid;
+      gap: 10px;
+      padding-top: 14px;
+      border-top: 2px solid var(--ink);
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-weight: 800;
+    }
+
+    .total-row.grand {
+      font-family: var(--font-display);
+      letter-spacing: 0.02em;
+      font-size: 30px;
+      color: var(--grass-dark);
+    }
+
+    .note {
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.6;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 26px;
+    }
+
+    .btn {
+      border: 3px solid var(--ink);
+      background: white;
+      color: var(--ink);
+      cursor: pointer;
+      text-decoration: none;
+      font-family: var(--font-ui);
+      font-size: 8px;
+      padding: 15px 18px;
+      box-shadow: 6px 6px 0 var(--stone);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+
+    .btn:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 8px 8px 0 var(--stone);
+    }
+
+    .btn.primary {
+      background: var(--ink);
+      color: white;
+      box-shadow: 6px 6px 0 var(--grass);
+    }
+
+    .btn[disabled] {
+      cursor: not-allowed;
+      opacity: 0.6;
+      transform: none;
+      box-shadow: 6px 6px 0 var(--stone);
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--ink);
+      color: white;
+      border: 3px solid var(--ink);
+      box-shadow: 6px 6px 0 var(--grass);
+      padding: 14px 18px;
+      font-family: var(--font-ui);
+      font-size: 8px;
+      opacity: 0;
+      transition: all 0.25s ease;
+      z-index: 40;
+      max-width: calc(100vw - 24px);
+      text-align: center;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 980px) {
+      .page {
+        grid-template-columns: 1fr;
+      }
+
+      .summary {
+        position: static;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .navbar {
+        padding: 16px;
+      }
+
+      .page {
+        width: min(100% - 16px, 100%);
+      }
+
+      .main,
+      .summary {
+        padding: 18px;
+      }
+
+      .form-grid,
+      .upi-methods {
+        grid-template-columns: 1fr;
+      }
+
+      .actions,
+      .nav-meta {
+        flex-direction: column;
+      }
+
+      .chip,
+      .btn {
+        width: 100%;
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 44px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a class="nav-logo" href="index.html"><img src="assets/skull-text.png" alt="SKULL Streetwear"></a>
+    <div class="nav-meta">
+      <span class="chip">SECURE CHECKOUT</span>
+      <span class="chip">FREE SHIPPING ABOVE ₹999</span>
+    </div>
+  </nav>
+
+  <main class="page">
+    <section class="main">
+      <p class="eyebrow">CHECKOUT FLOW</p>
+      <h1>Finish Your Order</h1>
+      <p class="copy">Shipping details, payment choice, and order creation now all use the same data model as login and profile.</p>
+
+      <section class="section">
+        <h2>Shipping Address</h2>
+        <p class="copy">We will use this for delivery and order updates.</p>
+        <form id="checkoutForm" novalidate>
+          <div class="form-grid">
+            <div class="field">
+              <label for="firstName">First Name</label>
+              <input id="firstName" type="text">
+              <span class="error">Please enter your first name.</span>
+            </div>
+            <div class="field">
+              <label for="lastName">Last Name</label>
+              <input id="lastName" type="text">
+              <span class="error">Please enter your last name.</span>
+            </div>
+            <div class="field">
+              <label for="phone">Phone</label>
+              <input id="phone" type="tel" placeholder="+91 98765 43210">
+              <span class="error">Please enter a valid phone number.</span>
+            </div>
+            <div class="field">
+              <label for="email">Email</label>
+              <input id="email" type="email">
+              <span class="error">Please enter your email.</span>
+            </div>
+            <div class="field full">
+              <label for="address">Address</label>
+              <textarea id="address" placeholder="Street address, area, building, landmark"></textarea>
+              <span class="error">Please enter the delivery address.</span>
+            </div>
+            <div class="field">
+              <label for="city">City</label>
+              <input id="city" type="text">
+              <span class="error">Please enter the city.</span>
+            </div>
+            <div class="field">
+              <label for="state">State</label>
+              <select id="state">
+                <option value="">Select state</option>
+                <option value="Maharashtra">Maharashtra</option>
+                <option value="Karnataka">Karnataka</option>
+                <option value="Tamil Nadu">Tamil Nadu</option>
+                <option value="Delhi">Delhi</option>
+                <option value="Gujarat">Gujarat</option>
+                <option value="West Bengal">West Bengal</option>
+                <option value="Rajasthan">Rajasthan</option>
+                <option value="Telangana">Telangana</option>
+              </select>
+              <span class="error">Please select a state.</span>
+            </div>
+            <div class="field">
+              <label for="pincode">Pincode</label>
+              <input id="pincode" type="text" placeholder="400001">
+              <span class="error">Please enter a valid pincode.</span>
+            </div>
+            <div class="field">
+              <label for="country">Country</label>
+              <input id="country" type="text" value="India" disabled>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <section class="section">
+        <h2>Payment Method</h2>
+        <p class="copy">Cash on delivery or UPI, with app or QR routing on the next step.</p>
+
+        <div class="payment-grid">
+          <button class="payment-card" type="button" data-payment="cod">
+            <div class="payment-top">
+              <i class="fa fa-money-bill-wave"></i>
+              <div>
+                <strong>Cash on Delivery</strong>
+                <span>Pay when the parcel arrives.</span>
+              </div>
+            </div>
+          </button>
+
+          <button class="payment-card" type="button" data-payment="upi">
+            <div class="payment-top">
+              <i class="fa fa-mobile-screen-button"></i>
+              <div>
+                <strong>UPI Payment</strong>
+                <span>Use GPay, PhonePe, Paytm, or any UPI app.</span>
+              </div>
+            </div>
+          </button>
+        </div>
+
+        <div class="upi-box" id="upiBox">
+          <div class="eyebrow" style="margin-bottom:10px;">UPI DETAILS</div>
+          <div class="upi-id">joelvini2007@okicici</div>
+          <div class="upi-methods">
+            <button class="upi-method" type="button" data-upi-method="app">PAY THROUGH APP</button>
+            <button class="upi-method" type="button" data-upi-method="qr">SCAN QR CODE</button>
+          </div>
+          <p class="note">You will be taken to a dedicated payment page where the order amount and QR code are generated from your cart.</p>
+        </div>
+      </section>
+
+      <div class="actions">
+        <a class="btn" href="skull-combined.html">BACK TO SHOP</a>
+        <button class="btn primary" type="button" id="placeOrderBtn">PLACE ORDER</button>
+      </div>
+    </section>
+
+    <aside class="summary">
+      <p class="eyebrow">ORDER SUMMARY</p>
+      <h2>Your Bag</h2>
+      <p class="copy" id="summaryCopy">0 items ready to ship.</p>
+      <div class="summary-items" id="summaryItems"></div>
+      <div class="totals">
+        <div class="total-row"><span>Subtotal</span><span id="subtotalValue">₹0</span></div>
+        <div class="total-row"><span>Shipping</span><span id="shippingValue">₹0</span></div>
+        <div class="total-row"><span>GST (18%)</span><span id="taxValue">₹0</span></div>
+        <div class="total-row grand"><span>Total</span><span id="totalValue">₹0</span></div>
+      </div>
+      <p class="note">Orders under ₹999 include ₹99 shipping. UPI orders are saved as pending until payment is confirmed.</p>
+    </aside>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="store-utils.js"></script>
+  <script>
+    (async function () {
+    const sessionUser = SKULLStore.getCurrentUser();
+    const cart = SKULLStore.getCart();
+
+    if (!sessionUser || !SKULLStore.getAuthToken()) {
+      window.location.replace("login.html?redirect=checkout.html");
+      return;
+    }
+    if (!cart.length) {
+      window.location.replace("skull-combined.html");
+      return;
+    }
+
+    let currentUser;
+    try {
+      currentUser = await SKULLStore.getCurrentUserRecord();
+    } catch (error) {
+      SKULLStore.logout();
+      window.location.replace("login.html?redirect=checkout.html");
+      return;
+    }
+
+    const state = {
+      paymentMethod: "",
+      upiMethod: "",
+      totals: SKULLStore.cartTotals(cart)
+    };
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      window.clearTimeout(showToast.timer);
+      showToast.timer = window.setTimeout(() => toast.classList.remove("show"), 2400);
+    }
+
+    function renderSummary() {
+      const summaryItems = document.getElementById("summaryItems");
+      document.getElementById("summaryCopy").textContent = `${cart.reduce((sum, item) => sum + Number(item.quantity || 1), 0)} items ready to ship.`;
+      summaryItems.innerHTML = cart.map((item) => `
+        <div class="summary-item">
+          <div class="summary-thumb">
+            ${item.img
+              ? `<img src="${item.img}" alt="${SKULLStore.escapeHtml(item.name)}" onerror="this.replaceWith(Object.assign(document.createElement('div'), { textContent: '${item.emoji || "💀"}' }))">`
+              : (item.emoji || "💀")}
+          </div>
+          <div>
+            <div class="summary-name">${SKULLStore.escapeHtml(item.name)}</div>
+            <div class="summary-meta">${item.quantity || 1} x ${SKULLStore.formatCurrency(item.price)}</div>
+          </div>
+          <div class="summary-price">${SKULLStore.formatCurrency(Number(item.price) * Number(item.quantity || 1))}</div>
+        </div>
+      `).join("");
+
+      document.getElementById("subtotalValue").textContent = SKULLStore.formatCurrency(state.totals.subtotal);
+      document.getElementById("shippingValue").textContent = state.totals.shipping === 0 ? "FREE" : SKULLStore.formatCurrency(state.totals.shipping);
+      document.getElementById("taxValue").textContent = SKULLStore.formatCurrency(state.totals.tax);
+      document.getElementById("totalValue").textContent = SKULLStore.formatCurrency(state.totals.total);
+    }
+
+    function prefillShipping() {
+      document.getElementById("firstName").value = currentUser.firstName || "";
+      document.getElementById("lastName").value = currentUser.lastName || "";
+      document.getElementById("phone").value = currentUser.phone || "";
+      document.getElementById("email").value = currentUser.email || "";
+    }
+
+    function setPaymentMethod(method) {
+      state.paymentMethod = method;
+      document.querySelectorAll("[data-payment]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.payment === method);
+      });
+      document.getElementById("upiBox").classList.toggle("show", method === "upi");
+      if (method !== "upi") {
+        state.upiMethod = "";
+        document.querySelectorAll("[data-upi-method]").forEach((button) => button.classList.remove("active"));
+      }
+    }
+
+    function setUPIMethod(method) {
+      state.upiMethod = method;
+      document.querySelectorAll("[data-upi-method]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.upiMethod === method);
+      });
+    }
+
+    function clearErrors() {
+      document.querySelectorAll(".error").forEach((node) => {
+        node.style.display = "none";
+      });
+    }
+
+    function validateField(id, test) {
+      const input = document.getElementById(id);
+      const error = input.parentElement.querySelector(".error");
+      const valid = test(input.value.trim());
+      error.style.display = valid ? "none" : "block";
+      return valid;
+    }
+
+    function getShippingData() {
+      return {
+        firstName: document.getElementById("firstName").value.trim(),
+        lastName: document.getElementById("lastName").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+        email: document.getElementById("email").value.trim().toLowerCase(),
+        address: document.getElementById("address").value.trim(),
+        city: document.getElementById("city").value.trim(),
+        state: document.getElementById("state").value,
+        pincode: document.getElementById("pincode").value.trim(),
+        country: "India"
+      };
+    }
+
+    function validateForm() {
+      clearErrors();
+      const valid = [
+        validateField("firstName", (value) => value.length > 0),
+        validateField("lastName", () => true),
+        validateField("phone", (value) => /^[0-9+\-\s]{10,15}$/.test(value)),
+        validateField("email", (value) => /\S+@\S+\.\S+/.test(value)),
+        validateField("address", (value) => value.length > 7),
+        validateField("city", (value) => value.length > 1),
+        validateField("state", (value) => value.length > 0),
+        validateField("pincode", (value) => /^[0-9]{6}$/.test(value))
+      ].every(Boolean);
+
+      if (!state.paymentMethod) {
+        showToast("Please choose a payment method.");
+        return false;
+      }
+
+      if (state.paymentMethod === "upi" && !state.upiMethod) {
+        showToast("Please choose UPI app or QR code.");
+        return false;
+      }
+
+      return Boolean(valid);
+    }
+
+    async function placeOrder() {
+      if (!validateForm()) {
+        showToast("Please finish the required details.");
+        return;
+      }
+
+      const button = document.getElementById("placeOrderBtn");
+      button.disabled = true;
+
+      try {
+        const shipping = getShippingData();
+        try {
+          await SKULLStore.updateProfile({
+            firstName: shipping.firstName,
+            lastName: shipping.lastName,
+            name: `${shipping.firstName} ${shipping.lastName}`.trim(),
+            email: shipping.email,
+            phone: shipping.phone
+          });
+        } catch (profileError) {
+          console.warn("Profile sync failed during checkout:", profileError);
+        }
+
+        const payload = {
+          items: cart.map((item) => ({
+            id: item.id,
+            name: item.name,
+            category: item.category || item.cat,
+            price: item.price,
+            quantity: item.quantity,
+            image: item.img || item.image
+          })),
+          paymentMethod: state.paymentMethod === "cod" ? "COD" : "UPI",
+          upiId: "joelvini2007@okicici",
+          shippingAddress: {
+            fullName: `${shipping.firstName} ${shipping.lastName}`.trim(),
+            firstName: shipping.firstName,
+            lastName: shipping.lastName,
+            phone: shipping.phone,
+            email: shipping.email,
+            line1: shipping.address,
+            city: shipping.city,
+            state: shipping.state,
+            pincode: shipping.pincode,
+            country: shipping.country
+          }
+        };
+
+        const result = await SKULLStore.createOrder(payload);
+
+        if (state.paymentMethod === "cod") {
+          SKULLStore.clearCart();
+          window.location.href = `order-confirmation.html?orderId=${result.order.id}`;
+          return;
+        }
+
+        window.location.href = `upi-payment.html?orderId=${result.order.id}&mode=${state.upiMethod}`;
+      } catch (error) {
+        button.disabled = false;
+        showToast(error.message || "Unable to place order right now.");
+      }
+    }
+
+    document.querySelectorAll("[data-payment]").forEach((button) => {
+      button.addEventListener("click", () => setPaymentMethod(button.dataset.payment));
+    });
+
+    document.querySelectorAll("[data-upi-method]").forEach((button) => {
+      button.addEventListener("click", () => setUPIMethod(button.dataset.upiMethod));
+    });
+
+    document.getElementById("placeOrderBtn").addEventListener("click", placeOrder);
+
+      renderSummary();
+      prefillShipping();
+    })();
+  </script>
+</body>
+</html>

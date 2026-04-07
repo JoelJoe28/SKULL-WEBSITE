@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - SKULL Streetwear</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Bebas+Neue&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --cream:#F7F3EC; --parchment:#EEE8D5; --off-white:#FAF8F4;
+            --grass:#5D9E3F; --grass-dark:#3E7228; --grass-light:#7BBF55;
+            --dirt:#8B6340; --stone:#A8A8A8;
+            --gold:#E8B400; --gold-light:#FFD700;
+            --ink:#16120C; --ink-mid:#3A3020; --muted:#8A7D68;
+            --sky-top:#B8DCFF; --sky-bot:#E8F4FF;
+            --red:#D32F2F;
+        }
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+        html{scroll-behavior:smooth;}
+        body{
+            font-family:'Nunito',sans-serif;
+            background:var(--cream);
+            color:var(--ink);
+            min-height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:20px;
+        }
+        .login-container{
+            background:var(--parchment);
+            border:3px solid var(--ink);
+            border-radius:8px;
+            padding:40px;
+            box-shadow:8px 8px 0 var(--stone);
+            max-width:400px;
+            width:100%;
+        }
+        h2{
+            font-family:'Press Start 2P',cursive;
+            font-size:24px;
+            color:var(--ink);
+            margin-bottom:30px;
+            text-align:center;
+        }
+        .form-group{
+            margin-bottom:20px;
+        }
+        label{
+            display:block;
+            font-family:'Press Start 2P',cursive;
+            font-size:10px;
+            color:var(--ink);
+            margin-bottom:8px;
+        }
+        input{
+            width:100%;
+            padding:12px;
+            border:2px solid var(--ink);
+            border-radius:4px;
+            font-family:'Nunito',sans-serif;
+            font-size:14px;
+            background:white;
+            transition:border-color 0.2s;
+        }
+        input:focus{
+            outline:none;
+            border-color:var(--grass);
+        }
+        button{
+            width:100%;
+            font-family:'Press Start 2P',cursive;
+            font-size:10px;
+            padding:12px;
+            border:2px solid var(--ink);
+            background:var(--grass);
+            color:white;
+            cursor:pointer;
+            transition:all 0.2s;
+            border-radius:4px;
+            font-weight:600;
+        }
+        button:hover:not(:disabled){
+            background:var(--grass-dark);
+            transform:translate(-2px,-2px);
+            box-shadow:4px 4px 0 var(--ink);
+        }
+        button:disabled{
+            opacity:0.75;
+            cursor:wait;
+        }
+        .message-container{
+            margin-bottom:20px;
+        }
+        .error-message{
+            background:var(--red);
+            color:white;
+            padding:10px;
+            border-radius:4px;
+            margin-bottom:20px;
+            font-size:12px;
+            text-align:center;
+        }
+        .success-message{
+            background:var(--grass);
+            color:white;
+            padding:10px;
+            border-radius:4px;
+            margin-bottom:20px;
+            font-size:12px;
+            text-align:center;
+        }
+        .register-link{
+            text-align:center;
+            margin-top:20px;
+            font-size:12px;
+            color:var(--muted);
+        }
+        .register-link a{
+            color:var(--grass);
+            text-decoration:none;
+            font-weight:600;
+        }
+        .register-link a:hover{
+            color:var(--grass-dark);
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <h2>Login to SKULL</h2>
+
+    <div id="message-container" class="message-container"></div>
+
+    <form id="login-form" novalidate>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="Enter your email" required autocomplete="email">
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter your password" required autocomplete="current-password">
+        </div>
+
+        <button type="submit" id="login-button">
+            <i class="fa fa-sign-in-alt"></i> Login
+        </button>
+    </form>
+
+    <div class="register-link">
+        Don't have an account?
+        <a href="index.html">Register</a>
+    </div>
+</div>
+
+<script src="store-utils.js"></script>
+<script>
+const form = document.getElementById("login-form");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+const loginButton = document.getElementById("login-button");
+const messageContainer = document.getElementById("message-container");
+
+function showMessage(type, text) {
+    const className = type === "success" ? "success-message" : "error-message";
+    messageContainer.innerHTML = `<div class="${className}">${text}</div>`;
+}
+
+function getApiBase() {
+    if (window.SKULLStore && typeof window.SKULLStore.getApiBase === "function") {
+        return window.SKULLStore.getApiBase();
+    }
+    if (window.location.protocol === "file:") {
+        return "http://localhost:5000";
+    }
+    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+        return `${window.location.protocol}//${window.location.hostname}:5000`;
+    }
+    return window.location.origin.replace(/\/$/, "");
+}
+
+function sanitizeRedirect(target) {
+    const fallback = "profile.html";
+    const value = String(target || "").trim();
+
+    if (!value || value.includes("://") || value.startsWith("//") || value.startsWith("/") || value.startsWith("javascript:")) {
+        return fallback;
+    }
+
+    return value;
+}
+
+function getRedirectTarget() {
+    const params = new URLSearchParams(window.location.search);
+    return sanitizeRedirect(params.get("redirect"));
+}
+
+function normalizeSessionUser(user, email) {
+    if (window.SKULLStore && typeof window.SKULLStore.createSessionUser === "function") {
+        return window.SKULLStore.createSessionUser({
+            ...user,
+            email
+        });
+    }
+
+    return {
+        id: String(user?.id || user?._id || ""),
+        name: String(user?.name || email.split("@")[0] || "User"),
+        email,
+        firstName: String(user?.firstName || ""),
+        lastName: String(user?.lastName || ""),
+        phone: String(user?.phone || ""),
+        role: String(user?.role || "customer"),
+        createdAt: user?.createdAt || null,
+        updatedAt: user?.updatedAt || null
+    };
+}
+
+function persistLegacyUser(sessionUser) {
+    const users = JSON.parse(localStorage.getItem("skullUsers") || "[]");
+    const sessionId = String(sessionUser.id || "");
+    const index = users.findIndex((user) => String(user.id || user._id || "") === sessionId);
+
+    if (index >= 0) {
+        users[index] = { ...users[index], ...sessionUser };
+    } else {
+        users.push(sessionUser);
+    }
+
+    localStorage.setItem("skullUsers", JSON.stringify(users));
+}
+
+async function fetchJson(response) {
+    const text = await response.text();
+    try {
+        return text ? JSON.parse(text) : {};
+    } catch (error) {
+        return { message: text };
+    }
+}
+
+async function loginWithLegacyApi(email, password) {
+    const response = await fetch(`${getApiBase()}/api/login`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, password })
+    });
+
+    const data = await fetchJson(response);
+    if (!response.ok) {
+        throw new Error(data.error || data.message || "Login failed");
+    }
+
+    let user = data.user || null;
+    if (!user && data.token) {
+        try {
+            const profileResponse = await fetch(`${getApiBase()}/api/profile`, {
+                headers: {
+                    Authorization: `Bearer ${data.token}`
+                }
+            });
+            const profileData = await fetchJson(profileResponse);
+            if (profileResponse.ok && profileData.user) {
+                user = profileData.user;
+            }
+        } catch (error) {
+            console.warn("Profile fetch after login failed:", error);
+        }
+    }
+
+    const sessionUser = normalizeSessionUser(user, email);
+    localStorage.setItem("skullToken", data.token || "");
+    localStorage.setItem("skullUser", JSON.stringify(sessionUser));
+    persistLegacyUser(sessionUser);
+
+    return sessionUser;
+}
+
+async function login(email, password) {
+    if (window.SKULLStore && typeof window.SKULLStore.login === "function") {
+        try {
+            const result = await window.SKULLStore.login(email, password);
+            const sessionUser = normalizeSessionUser(result?.user, email);
+            persistLegacyUser(sessionUser);
+            return sessionUser;
+        } catch (error) {
+            console.warn("Primary auth route failed, trying legacy route:", error);
+        }
+    }
+
+    return loginWithLegacyApi(email, password);
+}
+
+async function handleLogin(event) {
+    event.preventDefault();
+    messageContainer.innerHTML = "";
+
+    const email = emailInput.value.trim().toLowerCase();
+    const password = passwordInput.value;
+
+    if (!email || !password) {
+        showMessage("error", "Please fill in all fields");
+        return;
+    }
+
+    loginButton.disabled = true;
+    loginButton.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Logging in...';
+
+    try {
+        await login(email, password);
+        showMessage("success", "Login successful! Redirecting...");
+        setTimeout(() => {
+            window.location.href = getRedirectTarget();
+        }, 900);
+    } catch (error) {
+        showMessage("error", error.message || "Connection error. Please try again.");
+        console.error("Login error:", error);
+    } finally {
+        loginButton.disabled = false;
+        loginButton.innerHTML = '<i class="fa fa-sign-in-alt"></i> Login';
+    }
+}
+
+form.addEventListener("submit", handleLogin);
+</script>
+
+</body>
+</html>

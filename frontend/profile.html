@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - SKULL Streetwear</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Bebas+Neue&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --cream:#F7F3EC; --parchment:#EEE8D5; --off-white:#FAF8F4;
+            --grass:#5D9E3F; --grass-dark:#3E7228; --grass-light:#7BBF55;
+            --dirt:#8B6340; --stone:#A8A8A8;
+            --gold:#E8B400; --gold-light:#FFD700;
+            --ink:#16120C; --ink-mid:#3A3020; --muted:#8A7D68;
+            --sky-top:#B8DCFF; --sky-bot:#E8F4FF;
+        }
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+        html{scroll-behavior:smooth;}
+        body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;cursor:none;}
+
+        /* ═══ CUSTOM CURSOR ═══ */
+        .cursor{position:fixed;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);}
+        .cursor-inner{width:14px;height:14px;background:var(--gold-light);border:2px solid var(--ink);transition:transform .1s,background .2s;}
+        .cursor-outer{position:fixed;pointer-events:none;z-index:99998;width:36px;height:36px;border:2px solid var(--grass);transform:translate(-50%,-50%);transition:left .08s,top .08s;}
+        .px-trail{position:fixed;pointer-events:none;z-index:99990;width:8px;height:8px;background:var(--gold-light);border:1px solid var(--ink);transform:translate(-50%,-50%);opacity:0;}
+
+        /* NAVBAR */
+        .navbar{position:sticky;top:0;z-index:900;height:72px;background:var(--cream);border-bottom:3px solid var(--ink);display:flex;align-items:center;justify-content:space-between;padding:0 52px;box-shadow:0 3px 0 var(--stone);}
+        .nav-left{display:flex;align-items:center;gap:44px;}
+        .nav-logo img{height:50px;filter:drop-shadow(2px 2px 0 rgba(0,0,0,.12));transition:transform .2s;}
+        .nav-logo img:hover{transform:scale(1.06) rotate(-2deg);}
+        .nav-right{display:flex;align-items:center;gap:22px;}
+        .nav-right i{font-size:18px;cursor:pointer;color:var(--ink);transition:color .2s,transform .2s;}
+        .nav-right i:hover{color:var(--grass);transform:scale(1.15);}
+
+        /* BREADCRUMB */
+        .breadcrumb{padding:20px 52px;background:var(--parchment);border-bottom:2px solid var(--stone);}
+        .breadcrumb-inner{display:flex;align-items:center;gap:12px;font-family:'Press Start 2P',cursive;font-size:8px;color:var(--muted);}
+        .breadcrumb-inner a{color:var(--grass-d);text-decoration:none;transition:color .2s;}
+        .breadcrumb-inner a:hover{color:var(--grass);}
+
+        /* PROFILE CONTAINER */
+        .profile-container{max-width:1200px;margin:0 auto;padding:40px 52px;}
+        
+        /* PROFILE HEADER */
+        .profile-header{background:var(--parchment);border:3px solid var(--ink);border-radius:8px;padding:40px;margin-bottom:40px;box-shadow:6px 6px 0 var(--stone);display:flex;align-items:center;gap:40px;}
+        .profile-avatar{width:120px;height:120px;background:var(--grass);border:4px solid var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:48px;color:white;font-family:'Press Start 2P',cursive;flex-shrink:0;}
+        .profile-info h1{font-family:'Bebas Neue',cursive;font-size:48px;color:var(--ink);margin-bottom:8px;}
+        .profile-info p{font-size:16px;color:var(--muted);margin-bottom:4px;}
+        .profile-actions{margin-top:20px;display:flex;gap:12px;}
+
+        /* TABS */
+        .tabs{display:flex;background:var(--parchment);border-radius:8px;margin-bottom:32px;overflow:hidden;border:2px solid var(--ink);}
+        .tab{flex:1;font-family:'Press Start 2P',cursive;font-size:8px;padding:16px;border:none;cursor:pointer;transition:all .2s;letter-spacing:1px;background:transparent;color:var(--muted);border-right:2px solid var(--ink);}
+        .tab:last-child{border-right:none;}
+        .tab.active{background:var(--ink);color:var(--gold-light);}
+        .tab:hover{background:var(--cream);color:var(--grass);}
+
+        /* TAB CONTENT */
+        .tab-content{display:none;}
+        .tab-content.active{display:block;}
+
+        /* BUTTONS */
+        .btn{font-family:'Press Start 2P',cursive;font-size:8px;padding:12px 24px;border:2px solid var(--ink);background:white;color:var(--ink);cursor:pointer;transition:all .2s;border-radius:4px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;}
+        .btn:hover{background:var(--parchment);transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--ink);}
+        .btn.btn-primary{background:var(--grass);color:white;}
+        .btn.btn-primary:hover{background:var(--grass-dark);}
+
+        /* ORDERS */
+        .orders-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(350px,1fr));gap:24px;}
+        .order-card{background:var(--parchment);border:3px solid var(--ink);border-radius:8px;padding:20px;box-shadow:4px 4px 0 var(--stone);transition:transform .2s;}
+        .order-card:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--stone);}
+        .order-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid var(--cream);}
+        .order-number{font-family:'Press Start 2P',cursive;font-size:8px;color:var(--ink);}
+        .order-date{font-size:12px;color:var(--muted);margin-top:4px;}
+        .order-status{font-family:'Press Start 2P',cursive;font-size:7px;padding:4px 8px;border-radius:4px;}
+        .status-processing{background:var(--gold);color:var(--ink);}
+        .status-completed{background:var(--grass);color:white;}
+        .status-cancelled{background:var(--red);color:white;}
+        .order-items{margin-bottom:16px;}
+        .order-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--cream);}
+        .order-item:last-child{border-bottom:none;}
+        .item-name{font-weight:600;}
+        .item-qty{color:var(--muted);}
+        .item-price{font-family:'Bebas Neue',cursive;color:var(--grass);}
+        .order-footer{display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:2px solid var(--cream);}
+        .order-total{font-family:'Bebas Neue',cursive;font-size:18px;color:var(--ink);}
+        .btn.small{font-size:7px;padding:8px 16px;}
+
+        /* SETTINGS */
+        .settings-section{background:var(--parchment);border:3px solid var(--ink);border-radius:8px;padding:32px;margin-bottom:24px;box-shadow:4px 4px 0 var(--stone);}
+        .settings-section h2{font-family:'Bebas Neue',cursive;font-size:24px;color:var(--ink);margin-bottom:24px;border-bottom:3px solid var(--grass);padding-bottom:12px;}
+        .form-group{margin-bottom:24px;}
+        .form-group label{display:block;font-family:'Press Start 2P',cursive;font-size:8px;color:var(--ink);margin-bottom:8px;}
+        .form-group input{width:100%;padding:12px;border:2px solid var(--ink);border-radius:4px;font-family:'Nunito',sans-serif;font-size:14px;background:white;}
+        .form-group input:focus{outline:none;border-color:var(--grass);}
+
+        /* WISHLIST */
+        .wishlist-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px;}
+        .wishlist-item{background:var(--parchment);border:3px solid var(--ink);border-radius:8px;padding:20px;box-shadow:4px 4px 0 var(--stone);transition:transform .2s;}
+        .wishlist-item:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--stone);}
+        .wishlist-img{width:100%;height:200px;background:var(--cream);border:2px solid var(--ink);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:48px;margin-bottom:16px;}
+        .wishlist-name{font-weight:700;font-size:16px;margin-bottom:8px;}
+        .wishlist-price{font-family:'Bebas Neue',cursive;font-size:20px;color:var(--grass);margin-bottom:16px;}
+        .wishlist-actions{display:flex;gap:8px;}
+        .btn-cart{flex:1;font-family:'Press Start 2P',cursive;font-size:7px;padding:8px;border:2px solid var(--ink);background:var(--grass);color:white;cursor:pointer;text-decoration:none;text-align:center;transition:all .2s;border-radius:4px;}
+        .btn-cart:hover{background:var(--grass-dark);}
+        .btn-remove{font-family:'Press Start 2P',cursive;font-size:7px;padding:8px;border:2px solid var(--ink);background:var(--red);color:white;cursor:pointer;text-decoration:none;text-align:center;transition:all .2s;border-radius:4px;}
+        .btn-remove:hover{background:var(--red-dark);}
+
+        /* TOAST */
+        .toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--grass);color:white;font-family:'Press Start 2P',cursive;font-size:9px;padding:14px 24px;border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);opacity:0;transition:all .3s;z-index:9998;white-space:nowrap;}
+        .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+        .toast.error{background:var(--red);}
+
+        /* EMPTY STATE */
+        .empty-state{text-align:center;padding:60px 20px;color:var(--muted);}
+        .empty-state i{font-size:48px;margin-bottom:16px;display:block;}
+        .empty-state h3{font-family:'Bebas Neue',cursive;font-size:24px;color:var(--ink);margin-bottom:8px;}
+        .empty-state p{margin-bottom:24px;}
+
+        /* RESPONSIVE */
+        @media(max-width:768px){
+            .navbar{padding:0 20px;}
+            .breadcrumb{padding:16px 20px;}
+            .profile-container{padding:20px;}
+            .profile-header{flex-direction:column;text-align:center;gap:20px;}
+            .tabs{flex-direction:column;}
+            .tab{width:100%;text-align:center;}
+            .wishlist-grid{grid-template-columns:1fr;}
+            .order-actions{flex-direction:column;}
+        }
+    </style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"><div class="cursor-inner"></div></div>
+<div class="cursor-outer" id="cursorOuter"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-left">
+    <a class="nav-logo" href="index.html">
+      <img src="assets/skull-text.png" alt="SKULL Streetwear">
+    </a>
+  </div>
+  <div class="nav-right">
+    <i class="fa fa-user" style="cursor:none" onclick="toggleUserMenu()" title="My Profile"></i>
+    <i class="fa fa-shopping-cart" title="Shopping Cart"></i>
+    <i class="fa fa-heart" title="Wishlist"></i>
+  </div>
+</nav>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <div class="breadcrumb-inner">
+    <a href="index.html">🏠 Home</a>
+    <span>›</span>
+    <span class="current">My Profile</span>
+  </div>
+</div>
+
+<!-- PROFILE CONTAINER -->
+<div class="profile-container">
+  <!-- PROFILE HEADER -->
+  <div class="profile-header">
+    <div class="profile-avatar" id="profileAvatar">J</div>
+    <div class="profile-info">
+      <h1 id="profileName">John Doe</h1>
+      <p id="profileEmail">john.doe@example.com</p>
+      <p id="profilePhone">+91 9876543210</p>
+      <p id="memberSince">Member since March 2024</p>
+      <div class="profile-actions">
+        <button class="btn btn-primary" onclick="editProfile()">
+          <i class="fa fa-edit"></i> Edit Profile
+        </button>
+        <button class="btn" onclick="logout()">
+          <i class="fa fa-sign-out-alt"></i> Logout
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('orders')">📦 My Orders</button>
+    <button class="tab" onclick="showTab('wishlist')">❤️ Wishlist</button>
+    <button class="tab" onclick="showTab('settings')">⚙️ Settings</button>
+  </div>
+
+  <!-- ORDERS TAB -->
+  <div id="ordersTab" class="tab-content active">
+    <div class="orders-grid" id="ordersGrid">
+      <!-- Orders will be populated by JavaScript -->
+    </div>
+  </div>
+
+  <!-- WISHLIST TAB -->
+  <div id="wishlistTab" class="tab-content">
+    <div class="wishlist-grid" id="wishlistGrid">
+      <!-- Wishlist items will be populated by JavaScript -->
+    </div>
+  </div>
+
+  <!-- SETTINGS TAB -->
+  <div id="settingsTab" class="tab-content">
+    <div class="settings-section">
+      <h2>📝 Personal Information</h2>
+      <form id="profileForm">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" id="firstName" required>
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" id="lastName" required>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="email" required>
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="tel" id="phone" required>
+        </div>
+        <button type="submit" class="btn btn-primary">
+          <i class="fa fa-save"></i> Save Changes
+        </button>
+      </form>
+    </div>
+
+    <div class="settings-section">
+      <h2>🔒 Change Password</h2>
+      <form id="passwordForm">
+        <div class="form-group">
+          <label>Current Password</label>
+          <input type="password" id="currentPassword" required>
+        </div>
+        <div class="form-group">
+          <label>New Password</label>
+          <input type="password" id="newPassword" required>
+        </div>
+        <div class="form-group">
+          <label>Confirm New Password</label>
+          <input type="password" id="confirmPassword" required>
+        </div>
+        <button type="submit" class="btn btn-primary">
+          <i class="fa fa-lock"></i> Update Password
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+    // Profile Page - Namespaced to avoid conflicts
+    window.ProfilePage = {
+        // STATE MANAGEMENT
+        currentUser: null,
+        users: [],
+        
+        // CURSOR
+        cursor: null,
+        cursorOuter: null,
+        trails: [],
+        mx: 0, my: 0, ox: 0, oy: 0,
+        
+        init: function() {
+            this.cursor = document.getElementById('cursor');
+            this.cursorOuter = document.getElementById('cursorOuter');
+            
+            // Initialize cursor trails
+            for(let i = 0; i < 6; i++){
+                const d = document.createElement('div');
+                d.className = 'px-trail';
+                document.body.appendChild(d);
+                this.trails.push({el: d, x: 0, y: 0});
+            }
+            
+            // Setup cursor events
+            document.addEventListener('mousemove', e => {
+                this.mx = e.clientX; this.my = e.clientY;
+                this.cursor.style.left = this.mx + 'px';
+                this.cursor.style.top = this.my + 'px';
+            });
+            
+            // Start cursor animation
+            this.animCursor();
+            
+            // Initialize page
+            this.checkAuth();
+            this.loadUserData();
+            this.setupEventListeners();
+        },
+        
+        animCursor: function(){
+            const self = this;
+            this.ox += (this.mx - this.ox) * .15;
+            this.oy += (this.my - this.oy) * .15;
+            this.cursorOuter.style.left = this.ox + 'px';
+            this.cursorOuter.style.top = this.oy + 'px';
+            this.trails.forEach((t, i) => {
+                const prev = i === 0 ? {x: this.mx, y: this.my} : this.trails[i-1];
+                t.x += (prev.x - t.x) * (0.3 - i * .03);
+                t.y += (prev.y - t.y) * (0.3 - i * .03);
+                t.el.style.left = t.x + 'px';
+                t.el.style.top = t.y + 'px';
+                t.el.style.opacity = (0.6 - i * .1).toString();
+                t.el.style.transform = `translate(-50%,-50%) scale(${1 - i * .12})`;
+            });
+            requestAnimationFrame(() => self.animCursor());
+        },
+        
+        // AUTHENTICATION
+        checkAuth: function(){
+            this.currentUser = JSON.parse(localStorage.getItem('skullUser'));
+            if(!this.currentUser){
+                window.location.href = 'login.html';
+                return;
+            }
+            this.users = JSON.parse(localStorage.getItem('skullUsers')) || [];
+        },
+        
+        // USER DATA LOADING
+        loadUserData: function(){
+            const user = this.users.find(u => u.id === this.currentUser.id);
+            if(!user) return;
+
+            // Update profile header
+            document.getElementById('profileName').textContent = `${user.firstName || user.name || 'User'} ${user.lastName || ''}`;
+            document.getElementById('profileEmail').textContent = user.email;
+            document.getElementById('profilePhone').textContent = user.phone || 'Not provided';
+            
+            const memberDate = new Date(user.createdAt || Date.now()).toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long' 
+            });
+            document.getElementById('memberSince').textContent = memberDate;
+            
+            // Update form fields
+            document.getElementById('firstName').value = user.firstName || '';
+            document.getElementById('lastName').value = user.lastName || '';
+            document.getElementById('email').value = user.email || '';
+            document.getElementById('phone').value = user.phone || '';
+            
+            // Load orders and wishlist
+            this.loadOrders(user);
+            this.loadWishlist();
+        },
+        
+        // ORDERS
+        loadOrders: function(user){
+            const ordersGrid = document.getElementById('ordersGrid');
+            const orders = user.orders || [];
+            
+            if(orders.length === 0){
+                ordersGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa fa-shopping-bag"></i>
+                        <h3>No orders yet</h3>
+                        <p>When you place orders, they'll appear here</p>
+                        <a href="skull-combined.html" class="btn btn-primary">Start Shopping</a>
+                    </div>
+                `;
+                return;
+            }
+
+            ordersGrid.innerHTML = orders.map(order => {
+                const orderNumber = `SKULL-${String(order.id).slice(-6).padStart(6, '0')}`;
+                const orderDate = new Date(order.date).toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric' 
+                });
+                
+                const statusClass = `status-${(order.status || 'processing').toLowerCase()}`;
+                const statusText = order.status ? order.status.charAt(0).toUpperCase() + order.status.slice(1) : 'Processing';
+
+                return `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div>
+                                <div class="order-number">${orderNumber}</div>
+                                <div class="order-date">${orderDate}</div>
+                            </div>
+                            <span class="order-status ${statusClass}">${statusText}</span>
+                        </div>
+                        <div class="order-items">
+                            ${order.items.map(item => `
+                                <div class="order-item">
+                                    <span class="item-name">${item.name}</span>
+                                    <span class="item-qty">x${item.quantity}</span>
+                                    <span class="item-price">₹${item.price}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="order-footer">
+                            <div class="order-total">Total: ₹${order.total}</div>
+                            <button class="btn small" onclick="ProfilePage.viewOrder(${order.id})">View Details</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        },
+        
+        // WISHLIST
+        loadWishlist: function(){
+            const wishlistGrid = document.getElementById('wishlistGrid');
+            const wishlist = JSON.parse(localStorage.getItem('skullWishlist')) || [];
+            
+            if(wishlist.length === 0){
+                wishlistGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa fa-heart"></i>
+                        <h3>Your wishlist is empty</h3>
+                        <p>Add items to your wishlist to see them here</p>
+                        <a href="skull-combined.html" class="btn btn-primary">Browse Products</a>
+                    </div>
+                `;
+                return;
+            }
+
+            // Get product data (this would normally come from backend)
+            const products = this.getProductsData();
+            
+            wishlistGrid.innerHTML = wishlist.map(productId => {
+                const product = products.find(p => p.id == productId);
+                if(!product) return '';
+                
+                return `
+                    <div class="wishlist-item">
+                        <div class="wishlist-img">
+                            <span class="product-emoji">${product.emoji}</span>
+                        </div>
+                        <div class="wishlist-info">
+                            <h4>${product.name}</h4>
+                            <p class="category">${product.category}</p>
+                            <div class="price">₹${product.price}</div>
+                        </div>
+                        <div class="wishlist-actions">
+                            <button class="btn-cart" onclick="ProfilePage.addToCart('${product.id}')">Add to Cart</button>
+                            <button class="btn-remove" onclick="ProfilePage.removeFromWishlist('${product.id}')">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        },
+        
+        getProductsData: function(){
+            return [
+                {id: 1, name: "Skull Hoodie", category: "TOPS", price: 2999, emoji: "👕"},
+                {id: 2, name: "Street Cargo Pants", category: "BOTTOMS", price: 2499, emoji: "👖"},
+                {id: 3, name: "Skull Cap", category: "ACCESSORIES", price: 999, emoji: "🧢"},
+                {id: 4, name: "Chain Necklace", category: "JEWELLERY", price: 1999, emoji: "📿"},
+                {id: 5, name: "Skull Tee", category: "TOPS", price: 1499, emoji: "👚"},
+                {id: 6, name: "Denim Jacket", category: "TOPS", price: 3999, emoji: "🧥"},
+                {id: 7, name: "Combat Boots", category: "FOOTWEAR", price: 4499, emoji: "👢"},
+                {id: 8, name: "Skull Ring", category: "JEWELLERY", price: 1299, emoji: "💍"}
+            ];
+        },
+        
+        // TAB MANAGEMENT
+        showTab: function(tabName){
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(`${tabName}Tab`).classList.add('active');
+        },
+        
+        // EVENT LISTENERS
+        setupEventListeners: function(){
+            // Profile form
+            document.getElementById('profileForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.updateProfile();
+            });
+
+            // Password form
+            document.getElementById('passwordForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.updatePassword();
+            });
+        },
+        
+        // PROFILE ACTIONS
+        editProfile: function(){
+            this.showTab('settings');
+        },
+
+        updateProfile: function(){
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            
+            const userIndex = this.users.findIndex(u => u.id === this.currentUser.id);
+            if(userIndex === -1) return;
+            
+            this.users[userIndex] = {
+                ...this.users[userIndex],
+                firstName,
+                lastName,
+                email,
+                phone
+            };
+            
+            localStorage.setItem('skullUsers', JSON.stringify(this.users));
+            localStorage.setItem('skullUser', JSON.stringify(this.users[userIndex]));
+            
+            this.showToast('Profile updated successfully!');
+            this.loadUserData();
+        },
+
+        updatePassword: function(){
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if(newPassword !== confirmPassword){
+                this.showToast('Passwords do not match!', 'error');
+                return;
+            }
+            
+            if(newPassword.length < 6){
+                this.showToast('Password must be at least 6 characters!', 'error');
+                return;
+            }
+            
+            // In a real app, you'd verify the current password
+            const userIndex = this.users.findIndex(u => u.id === this.currentUser.id);
+            if(userIndex === -1) return;
+            
+            this.users[userIndex].password = newPassword; // In real app, this would be hashed
+            
+            localStorage.setItem('skullUsers', JSON.stringify(this.users));
+            
+            this.showToast('Password updated successfully!');
+            document.getElementById('passwordForm').reset();
+        },
+
+        logout: function(){
+            localStorage.removeItem('skullUser');
+            this.showToast('Logged out successfully!');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
+        },
+        
+        // ORDER ACTIONS
+        viewOrder: function(orderId){
+            window.location.href = `order-confirmation.html?orderId=${orderId}`;
+        },
+
+        // WISHLIST ACTIONS
+        addToCart: function(productId){
+            // Add to cart logic
+            let cart = JSON.parse(localStorage.getItem('skullCart')) || [];
+            const product = this.getProductsData().find(p => p.id == productId);
+            
+            if(product){
+                cart.push({
+                    ...product,
+                    quantity: 1,
+                    addedAt: Date.now()
+                });
+                localStorage.setItem('skullCart', JSON.stringify(cart));
+                this.showToast('Added to cart!');
+            }
+        },
+
+        removeFromWishlist: function(productId){
+            let wishlist = JSON.parse(localStorage.getItem('skullWishlist')) || [];
+            wishlist = wishlist.filter(id => id !== productId);
+            localStorage.setItem('skullWishlist', JSON.stringify(wishlist));
+            
+            this.showToast('Removed from wishlist!');
+            this.loadWishlist();
+        },
+        
+        // UTILITY FUNCTIONS
+        showToast: function(message, type = 'success'){
+            const toast = document.getElementById('toast');
+            toast.textContent = String(message);
+            toast.className = `toast show ${type}`;
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    };
+    
+    // Initialize page when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        ProfilePage.init();
+    });
+    
+    // Global functions for HTML onclick handlers
+    function showTab(tabName) {
+        ProfilePage.showTab(tabName);
+    }
+    
+    function editProfile() {
+        ProfilePage.editProfile();
+    }
+    
+    function logout() {
+        ProfilePage.logout();
+    }
+    
+    // Shared user menu function for consistency across pages
+    function toggleUserMenu() {
+        const user = JSON.parse(localStorage.getItem('skullUser'));
+        if (!user) {
+            window.location.href = 'login.html';
+            return;
+        }
+        
+        // Create or show user menu
+        let userMenu = document.getElementById('userMenu');
+        if (!userMenu) {
+            userMenu = document.createElement('div');
+            userMenu.id = 'userMenu';
+            userMenu.className = 'user-menu';
+            userMenu.innerHTML = `
+                <div class="user-menu-header">
+                    <div class="user-avatar">${(user.firstName || user.name || user.email || 'User').charAt(0).toUpperCase()}</div>
+                    <div class="user-info">
+                        <div class="user-name">${user.firstName || user.name || 'User'}</div>
+                        <div class="user-email">${user.email}</div>
+                    </div>
+                </div>
+                <div class="user-menu-actions">
+                    <a href="profile.html" class="menu-item">
+                        <i class="fa fa-user"></i> My Profile
+                    </a>
+                    <a href="checkout.html" class="menu-item">
+                        <i class="fa fa-shopping-bag"></i> Orders
+                    </a>
+                    <button class="menu-item logout-btn" onclick="ProfilePage.logout()">
+                        <i class="fa fa-sign-out"></i> Logout
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(userMenu);
+            
+            // Close menu when clicking outside
+            document.addEventListener('click', function closeMenu(e) {
+                if (!userMenu.contains(e.target) && !e.target.closest('.fa-user')) {
+                    userMenu.style.display = 'none';
+                    document.removeEventListener('click', closeMenu);
+                }
+            });
+        }
+        
+        // Toggle menu visibility
+        userMenu.style.display = userMenu.style.display === 'block' ? 'none' : 'block';
+        
+        // Position menu near user icon
+        const userIcon = document.querySelector('.fa-user');
+        if (userIcon) {
+            const rect = userIcon.getBoundingClientRect();
+            userMenu.style.top = rect.bottom + 10 + 'px';
+            userMenu.style.right = '20px';
+        }
+    }
+</script>
+
+<style>
+/* User Menu Styles */
+.user-menu {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    background: white;
+    border: 3px solid var(--ink);
+    border-radius: 8px;
+    box-shadow: 6px 6px 0 var(--ink);
+    z-index: 1000;
+    min-width: 250px;
+    display: none;
+    font-family: 'Nunito', sans-serif;
+}
+
+.user-menu-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    border-bottom: 2px solid var(--parchment);
+    background: var(--cream);
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    background: var(--grass);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.user-info .user-name {
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 2px;
+}
+
+.user-info .user-email {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.user-menu-actions {
+    padding: 8px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    color: var(--ink);
+    text-decoration: none;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+    background: none;
+    width: 100%;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.menu-item:hover {
+    background: var(--parchment);
+    color: var(--grass);
+}
+
+.menu-item i {
+    width: 16px;
+    text-align: center;
+}
+
+.logout-btn {
+    color: var(--red) !important;
+}
+
+.logout-btn:hover {
+    background: #fff0f0 !important;
+}
+</style>
+</body>
+</html>

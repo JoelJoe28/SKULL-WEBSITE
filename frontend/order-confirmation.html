@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Confirmation - SKULL Streetwear</title>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Press+Start+2P&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --cream: #f7f3ec;
+      --parchment: #eee8d5;
+      --ink: #16120c;
+      --muted: #8a7d68;
+      --stone: #a8a8a8;
+      --grass: #5d9e3f;
+      --grass-dark: #3e7228;
+      --gold: #e8b400;
+      --font-body: "Nunito", sans-serif;
+      --font-display: "Anton", sans-serif;
+      --font-ui: "Press Start 2P", cursive;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      font-weight: 700;
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, rgba(93, 158, 63, 0.12), transparent 240px),
+        var(--cream);
+    }
+
+    .page {
+      width: min(1040px, calc(100% - 32px));
+      margin: 28px auto 40px;
+      display: grid;
+      gap: 22px;
+    }
+
+    .hero,
+    .panel {
+      background: white;
+      border: 3px solid var(--ink);
+      box-shadow: 8px 8px 0 var(--stone);
+    }
+
+    .hero {
+      padding: 28px;
+      text-align: center;
+    }
+
+    .icon {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 18px;
+      border-radius: 50%;
+      border: 4px solid var(--ink);
+      background: linear-gradient(135deg, var(--grass), var(--grass-dark));
+      color: white;
+      display: grid;
+      place-items: center;
+      font-size: 52px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      font-family: var(--font-ui);
+      font-size: 8px;
+      color: var(--grass-dark);
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+      font-family: var(--font-display);
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    h1 {
+      font-size: 64px;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      font-size: 34px;
+      margin-bottom: 12px;
+    }
+
+    .copy {
+      margin: 0;
+      color: var(--muted);
+      font-weight: 700;
+      line-height: 1.7;
+    }
+
+    .badge {
+      display: inline-block;
+      margin-top: 18px;
+      padding: 12px 16px;
+      border: 2px solid var(--ink);
+      background: var(--parchment);
+      font-family: var(--font-ui);
+      font-size: 8px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+    }
+
+    .panel {
+      padding: 22px;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .meta-card {
+      border: 2px solid var(--ink);
+      background: var(--parchment);
+      padding: 16px;
+    }
+
+    .meta-card span {
+      display: block;
+      margin-bottom: 8px;
+      font-family: var(--font-ui);
+      font-size: 7px;
+      color: var(--muted);
+    }
+
+    .meta-card strong {
+      font-size: 16px;
+    }
+
+    .items {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .item {
+      display: grid;
+      grid-template-columns: 68px 1fr auto;
+      gap: 14px;
+      align-items: center;
+      border-bottom: 1px solid var(--parchment);
+      padding-bottom: 14px;
+    }
+
+    .thumb {
+      width: 68px;
+      height: 68px;
+      border: 2px solid var(--ink);
+      background: var(--parchment);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      font-size: 28px;
+    }
+
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .item strong {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .item span {
+      color: var(--muted);
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    .item-price {
+      font-family: var(--font-display);
+      letter-spacing: 0.02em;
+      font-size: 26px;
+    }
+
+    .totals {
+      margin-top: 16px;
+      display: grid;
+      gap: 10px;
+      border-top: 2px solid var(--ink);
+      padding-top: 16px;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-weight: 800;
+    }
+
+    .row.grand {
+      font-family: var(--font-display);
+      letter-spacing: 0.02em;
+      font-size: 30px;
+      color: var(--grass-dark);
+    }
+
+    .address {
+      border: 2px solid var(--ink);
+      background: var(--parchment);
+      padding: 18px;
+      line-height: 1.7;
+      font-weight: 800;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .step {
+      display: flex;
+      gap: 12px;
+      align-items: start;
+      border: 2px solid var(--parchment);
+      background: #fbfaf6;
+      padding: 12px;
+    }
+
+    .step-marker {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 2px solid var(--ink);
+      display: grid;
+      place-items: center;
+      background: white;
+      font-family: var(--font-ui);
+      font-size: 8px;
+      flex-shrink: 0;
+    }
+
+    .step strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 15px;
+    }
+
+    .step p {
+      margin: 0;
+      color: var(--muted);
+      font-weight: 800;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      border: 3px solid var(--ink);
+      background: white;
+      color: var(--ink);
+      cursor: pointer;
+      text-decoration: none;
+      font-family: var(--font-ui);
+      font-size: 8px;
+      padding: 15px 18px;
+      box-shadow: 6px 6px 0 var(--stone);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+
+    .btn:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 8px 8px 0 var(--stone);
+    }
+
+    .btn.primary {
+      background: var(--ink);
+      color: white;
+      box-shadow: 6px 6px 0 var(--grass);
+    }
+
+    @media (max-width: 860px) {
+      .grid,
+      .meta-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        width: min(100% - 16px, 100%);
+      }
+
+      .hero,
+      .panel {
+        padding: 18px;
+      }
+
+      h1 {
+        font-size: 46px;
+      }
+
+      .item {
+        grid-template-columns: 54px 1fr;
+      }
+
+      .item-price {
+        grid-column: 2;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div class="icon"><i class="fa fa-check"></i></div>
+      <p class="eyebrow">ORDER SUCCESS</p>
+      <h1 id="heroTitle">Order Confirmed</h1>
+      <p class="copy" id="heroCopy">Your checkout is complete and your order is being prepared.</p>
+      <div class="badge" id="orderBadge">ORDER #SKULL-000000</div>
+    </section>
+
+    <section class="grid">
+      <article class="panel">
+        <p class="eyebrow">ORDER DETAILS</p>
+        <h2>Items & Payment</h2>
+        <div class="meta-grid">
+          <div class="meta-card">
+            <span>DATE</span>
+            <strong id="orderDate">-</strong>
+          </div>
+          <div class="meta-card">
+            <span>PAYMENT</span>
+            <strong id="paymentLabel">-</strong>
+          </div>
+          <div class="meta-card">
+            <span>STATUS</span>
+            <strong id="statusLabel">-</strong>
+          </div>
+          <div class="meta-card">
+            <span>CONTACT</span>
+            <strong id="emailLabel">-</strong>
+          </div>
+        </div>
+
+        <div class="items" id="itemsList"></div>
+
+        <div class="totals">
+          <div class="row"><span>Subtotal</span><span id="subtotalValue">₹0</span></div>
+          <div class="row"><span>Shipping</span><span id="shippingValue">₹0</span></div>
+          <div class="row"><span>GST</span><span id="taxValue">₹0</span></div>
+          <div class="row grand"><span>Total</span><span id="totalValue">₹0</span></div>
+        </div>
+      </article>
+
+      <article class="panel">
+        <p class="eyebrow">DELIVERY INFO</p>
+        <h2>Shipping & Timeline</h2>
+        <div class="address" id="addressCard"></div>
+        <div class="timeline" id="timelineList"></div>
+      </article>
+    </section>
+
+    <div class="actions">
+      <a class="btn primary" href="skull-combined.html">CONTINUE SHOPPING</a>
+      <a class="btn" href="profile.html">VIEW PROFILE</a>
+      <button class="btn" type="button" onclick="window.print()">PRINT RECEIPT</button>
+    </div>
+  </main>
+
+  <script src="store-utils.js"></script>
+  <script>
+    (async function () {
+    const params = new URLSearchParams(window.location.search);
+    const sessionUser = SKULLStore.getCurrentUser();
+    const orderId = params.get("orderId");
+
+    if (!sessionUser || !SKULLStore.getAuthToken() || !orderId) {
+      window.location.replace("profile.html");
+      return;
+    }
+
+    let order;
+    try {
+      order = await SKULLStore.getOrder(orderId);
+    } catch (error) {
+      window.location.replace("profile.html");
+      return;
+    }
+
+    function setText(id, value) {
+      document.getElementById(id).textContent = value;
+    }
+
+    function renderTimeline() {
+      const paid = String(order.payment?.status || "").toLowerCase().includes("completed");
+      const steps = [
+        {
+          title: paid ? "Payment captured" : "Order created",
+          copy: paid ? "Your UPI payment is marked complete and the order is queued." : "Your order is confirmed and moved to processing."
+        },
+        {
+          title: "Packing in progress",
+          copy: "Our team is preparing your pieces and checking dispatch details."
+        },
+        {
+          title: "Expected delivery",
+          copy: "Delivery usually lands in 3 to 5 business days depending on your city."
+        }
+      ];
+
+      document.getElementById("timelineList").innerHTML = steps.map((step, index) => `
+        <div class="step">
+          <div class="step-marker">${index + 1}</div>
+          <div>
+            <strong>${SKULLStore.escapeHtml(step.title)}</strong>
+            <p>${SKULLStore.escapeHtml(step.copy)}</p>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function render() {
+      const shippingAddress = order.shippingAddress || {};
+      const shippingCost = typeof order.shippingCost === "number"
+        ? order.shippingCost
+        : (typeof order.shipping === "number" ? order.shipping : 0);
+      const orderNumber = order.orderNumber || `ORDER #SKULL-${String(order.id).slice(-6).padStart(6, "0")}`;
+      const paymentLabel = order.payment?.label || (order.payment?.method === "upi" ? "UPI Payment" : "Cash on Delivery");
+      const heroTitle = String(order.payment?.status || "").toLowerCase().includes("completed")
+        ? "Payment Successful"
+        : "Order Confirmed";
+      const heroCopy = paymentLabel === "Cash on Delivery"
+        ? "Your order has been placed. You will pay when it arrives."
+        : "Your payment was recorded and your order is now being prepared.";
+
+      document.title = `${heroTitle} - SKULL Streetwear`;
+      setText("heroTitle", heroTitle);
+      setText("heroCopy", heroCopy);
+      setText("orderBadge", orderNumber);
+      setText("orderDate", new Date(order.date || order.createdAt).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" }));
+      setText("paymentLabel", paymentLabel);
+      setText("statusLabel", order.status || "Processing");
+      setText("emailLabel", shippingAddress.email || sessionUser.email);
+      setText("subtotalValue", SKULLStore.formatCurrency(order.subtotal));
+      setText("shippingValue", shippingCost === 0 ? "FREE" : SKULLStore.formatCurrency(shippingCost));
+      setText("taxValue", SKULLStore.formatCurrency(order.tax));
+      setText("totalValue", SKULLStore.formatCurrency(order.total));
+
+      document.getElementById("itemsList").innerHTML = order.items.map((item) => `
+        <div class="item">
+          <div class="thumb">
+            ${item.img
+              ? `<img src="${item.img}" alt="${SKULLStore.escapeHtml(item.name)}" onerror="this.replaceWith(Object.assign(document.createElement('div'), { textContent: '${item.emoji || "💀"}' }))">`
+              : (item.emoji || "💀")}
+          </div>
+          <div>
+            <strong>${SKULLStore.escapeHtml(item.name)}</strong>
+            <span>${item.quantity || 1} x ${SKULLStore.formatCurrency(item.price)}</span>
+          </div>
+          <div class="item-price">${SKULLStore.formatCurrency(Number(item.price) * Number(item.quantity || 1))}</div>
+        </div>
+      `).join("");
+
+      document.getElementById("addressCard").innerHTML = `
+        <strong>${SKULLStore.escapeHtml(shippingAddress.fullName || `${shippingAddress.firstName || ""} ${shippingAddress.lastName || ""}`.trim())}</strong><br>
+        ${SKULLStore.escapeHtml(shippingAddress.line1 || shippingAddress.address || "-")}<br>
+        ${shippingAddress.line2 ? `${SKULLStore.escapeHtml(shippingAddress.line2)}<br>` : ""}
+        ${SKULLStore.escapeHtml(shippingAddress.city || "-")}, ${SKULLStore.escapeHtml(shippingAddress.state || "-")} - ${SKULLStore.escapeHtml(shippingAddress.pincode || "-")}<br>
+        ${SKULLStore.escapeHtml(shippingAddress.country || "India")}<br>
+        Phone: ${SKULLStore.escapeHtml(shippingAddress.phone || "-")}<br>
+        Email: ${SKULLStore.escapeHtml(shippingAddress.email || sessionUser.email)}
+      `;
+
+      renderTimeline();
+    }
+
+      render();
+    })();
+  </script>
+
+  <script>
+    async function placeOrder() {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        alert("Please login first  MongoDB connection failed:");
+        return;
+      }
+
+      const res = await fetch("http://localhost:5000/api/order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({
+          items: [
+            { name: "Skull Shirt", price: 500 },
+            { name: "Skull Cap", price: 200 }
+          ],
+          totalAmount: 700
+        })
+      });
+
+      const data = await res.json();
+
+      document.getElementById("output").innerText =
+        JSON.stringify(data, null, 2);
+    }
+  </script>
+</body>
+</html>

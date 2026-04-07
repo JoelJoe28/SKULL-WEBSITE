@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SKULL — All Products</title>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Press+Start+2P&family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root{
+      --cream:#F7F3EC;--parchment:#EEE8D5;--off-white:#FAF8F4;
+      --grass:#5D9E3F;--grass-d:#3E7228;--grass-l:#7BBF55;
+      --dirt:#8B6340;--stone:#A8A8A8;
+      --gold:#E8B400;--gold-l:#FFD700;
+      --ink:#16120C;--ink-m:#3A3020;--muted:#8A7D68;--red:#D32F2F;
+      --sky-top:#B8DCFF;--sky-bot:#E8F4FF;
+      --font-body:'Nunito',sans-serif;--font-display:'Anton',sans-serif;--font-ui:'Press Start 2P',cursive;
+    }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{font-family:var(--font-body);font-weight:700;background:var(--cream);color:var(--ink);overflow-x:hidden;cursor:none;}
+
+    /* ═══ CUSTOM CURSOR ═══ */
+    .cursor{position:fixed;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);}
+    .cursor-inner{width:14px;height:14px;background:var(--gold-l);border:2px solid var(--ink);transition:transform .1s,background .2s;}
+    .cursor-outer{position:fixed;pointer-events:none;z-index:99998;width:36px;height:36px;border:2px solid var(--grass);transform:translate(-50%,-50%);transition:left .08s,top .08s;}
+    .px-trail{position:fixed;pointer-events:none;z-index:99990;width:8px;height:8px;background:var(--gold-l);border:1px solid var(--ink);transform:translate(-50%,-50%);opacity:0;}
+
+    /* grain */
+    body::after{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity:.35;}
+    
+    /* Background pattern */
+    body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;
+      background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='minecraft-grid' width='60' height='60' patternUnits='userSpaceOnUse'%3E%3Cpath d='M 60 0 L 0 0 0 60' fill='none' stroke='%2316120C' stroke-width='1' opacity='0.05'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23minecraft-grid)'/%3E%3C/svg%3E");
+      opacity:0.3;}
+
+    /* NAVBAR - Clean & Organized */
+    .navbar{position:sticky;top:0;z-index:900;height:80px;background:var(--cream);border-bottom:3px solid var(--ink);display:flex;align-items:center;justify-content:space-between;padding:0 64px;box-shadow:0 4px 0 var(--stone);backdrop-filter:blur(10px);}
+    .nav-logo{display:flex;align-items:center;text-decoration:none;}
+    .nav-logo img{height:48px;filter:drop-shadow(3px 3px 0 rgba(0,0,0,.15));transition:transform .3s ease;}
+    .nav-logo img:hover{transform:scale(1.08) rotate(-3deg);}
+    .nav-icons{display:flex;gap:24px;align-items:center;}
+    .nav-icon-btn{background:none;border:none;font-size:18px;cursor:none;color:var(--ink);transition:all .2s ease;position:relative;padding:8px;border-radius:50%;}
+    .nav-icon-btn:hover{color:var(--grass);transform:scale(1.2);background:var(--parchment);}
+    .user-trigger{min-width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:18px;letter-spacing:.02em;text-transform:uppercase;}
+    .cart-badge{position:absolute;top:-6px;right:-6px;background:var(--grass);color:#fff;font-family:'Press Start 2P',cursive;font-size:7px;width:20px;height:20px;display:flex;align-items:center;justify-content:center;border:2px solid var(--ink);border-radius:50%;animation:badgePulse 2s infinite;}
+    @keyframes badgePulse{0%,100%{transform:scale(1);}50%{transform:scale(1.1);}}
+    
+    .ticker{background:var(--ink);overflow:hidden;padding:10px 0;}
+    .ticker-inner{display:flex;gap:48px;animation:tkScroll 22s linear infinite;white-space:nowrap;}
+    .ticker-inner span{font-family:'Press Start 2P',cursive;font-size:8px;color:var(--gold-l);letter-spacing:2px;flex-shrink:0;}
+    @keyframes tkScroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+    
+    .breadcrumb{padding:14px 52px;background:var(--parchment);border-bottom:2px solid var(--ink);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+    .breadcrumb a,.breadcrumb span{font-family:'Press Start 2P',cursive;font-size:7px;color:var(--muted);text-decoration:none;letter-spacing:.5px;}
+    .breadcrumb a:hover{color:var(--grass-d);}
+    .breadcrumb .cur{color:var(--ink);}
+    
+    /* SECTIONS - Clean & Spacious */
+    .sec{padding:100px 64px;}
+    .sec-inner{max-width:1400px;margin:0 auto;}
+    .sec-eyebrow{font-family:'Press Start 2P',cursive;font-size:8px;color:var(--grass);letter-spacing:2px;margin-bottom:12px;}
+    .sec-title{font-family:var(--font-display);font-size:58px;color:var(--ink);line-height:1;margin-bottom:16px;letter-spacing:.02em;text-transform:uppercase;}
+    .sec-line{width:64px;height:4px;background:var(--grass);margin-top:16px;border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink);}
+    .sec-hdr{margin-bottom:48px;}
+    
+    /* Breadcrumb - Clean Navigation */
+    .breadcrumb{padding:20px 64px;background:var(--parchment);border-bottom:2px solid var(--ink);display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+    .breadcrumb a,.breadcrumb span{font-family:'Press Start 2P',cursive;font-size:7px;color:var(--muted);text-decoration:none;letter-spacing:1px;padding:4px 8px;border-radius:2px;transition:all .2s ease;}
+    .breadcrumb a:hover{color:var(--grass);background:var(--cream);}
+    .breadcrumb .cur{color:var(--ink);background:var(--cream);border:1px solid var(--ink);}
+    
+    /* PRODUCT GRID - Clean & Organized */
+    .prod-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:32px;max-width:1400px;margin:48px 0 0 0;}
+    .prod-card{background:white;border:3px solid var(--ink);box-shadow:6px 6px 0 var(--ink);position:relative;overflow:hidden;transition:all .2s ease;cursor:pointer;border-radius:8px;}
+    .prod-card:hover{transform:translate(-4px,-4px);box-shadow:10px 10px 0 var(--ink);}
+    .prod-img{aspect-ratio:1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;background:var(--parchment);}
+    .pt{background:linear-gradient(135deg,#E0F0D8,#C5E0B8);}
+    .pb-c{background:linear-gradient(135deg,#D8E8F5,#B8D0EC);}
+    .pa{background:linear-gradient(135deg,#F5EDD0,#EDD8A0);}
+    .badge{position:absolute;top:12px;left:0;font-family:'Press Start 2P',cursive;font-size:7px;padding:6px 10px;color:white;box-shadow:3px 3px 0 var(--ink);z-index:2;border-radius:2px;}
+    .b-new{background:var(--grass);}
+    .b-sale{background:#D32F2F;}
+    .b-hot{background:#E65100;}
+    .wish{position:absolute;top:12px;right:12px;width:36px;height:36px;border:2px solid var(--ink);background:white;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;opacity:0;transition:all .2s;box-shadow:3px 3px 0 var(--ink);z-index:2;border-radius:50%;}
+    .prod-card:hover .wish{opacity:1;}
+    .wish.on{opacity:1;color:#D32F2F;background:#FFF0F0;}
+    .prod-body{padding:20px;border-top:3px solid var(--ink);}
+    .prod-cat{font-family:'Press Start 2P',cursive;font-size:7px;color:var(--grass);letter-spacing:1px;margin-bottom:8px;text-transform:uppercase;}
+    .prod-name{font-size:18px;font-weight:900;color:var(--ink);margin-bottom:10px;line-height:1.3;}
+    .prod-stars{font-size:14px;color:var(--gold);margin-bottom:16px;display:flex;align-items:center;gap:6px;}
+    .prod-rating{font-family:'Nunito',sans-serif;font-size:12px;color:var(--muted);margin-left:6px;}
+    .prod-foot{display:flex;justify-content:space-between;align-items:center;margin-top:16px;}
+    .prod-price{font-family:var(--font-display);font-size:26px;color:var(--ink);display:flex;align-items:center;gap:8px;letter-spacing:.02em;}
+    .prod-price .old{font-size:15px;color:var(--stone);text-decoration:line-through;font-family:'Nunito',sans-serif;}
+    .prod-price .sale{color:#D32F2F;}
+    .add-btn{font-family:'Press Start 2P',cursive;font-size:8px;background:var(--grass);color:white;border:2px solid var(--ink);padding:12px 16px;cursor:pointer;box-shadow:3px 3px 0 var(--ink);transition:all .2s ease;letter-spacing:1px;border-radius:6px;}
+    .add-btn:hover{background:var(--grass-dark);transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink);}
+    .add-btn.done{background:#1565C0;}
+    
+    /* PRODUCT MODAL - COMPACT CENTERED DESIGN */
+    .product-modal{position:fixed;top:0;right:-100%;width:100%;height:100vh;background:rgba(0,0,0,0.5);z-index:1002;transition:right .4s cubic-bezier(0.4, 0, 0.2, 1);overflow-y:auto;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;}
+    .product-modal.on{right:0;}
+    .product-close{position:absolute;top:16px;right:16px;width:32px;height:32px;background:#ffffff;border:1px solid #e5e5e5;color:#333;font-size:14px;cursor:pointer;z-index:1003;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .2s;box-shadow:0 2px 4px rgba(0,0,0,0.1);}
+    .product-close:hover{background:#f5f5f5;border-color:#d0d0d0;}
+    .product-modal-content{display:grid;grid-template-columns:400px 1fr;gap:40px;background:#ffffff;max-width:900px;margin:40px auto;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.15);overflow:hidden;position:relative;}
+    .product-modal-left{padding:40px 40px 40px 40px;display:flex;flex-direction:column;align-items:center;background:#fafbfc;}
+    .product-main-image{aspect-ratio:1;background:#f8f9fa;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08);position:relative;border:1px solid #e5e5e5;width:100%;max-width:320px;}
+    .product-main-image img{width:100%;height:100%;object-fit:cover;transition:transform 0.3s ease;}
+    .product-main-image:hover img{transform:scale(1.02);}
+    .product-thumbnails{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px;width:100%;max-width:320px;}
+    .product-thumbnails img{aspect-ratio:1;width:100%;border-radius:6px;border:2px solid transparent;cursor:pointer;transition:all .2s ease;object-fit:cover;background:#f8f9fa;}
+    .product-thumbnails img:hover{border-color:#2563eb;transform:scale(1.02);box-shadow:0 2px 8px rgba(37,99,235,0.15);}
+    .product-thumbnails img.active{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,0.1);}
+    
+    .product-modal-right{padding:40px 40px 40px 0;color:#1a1a1a;max-height:80vh;overflow-y:auto;}
+    .product-modal-category{font-size:12px;color:#2563eb;letter-spacing:1px;margin-bottom:8px;text-transform:uppercase;font-weight:500;}
+    .product-modal-title{font-size:28px;color:#1a1a1a;margin-bottom:12px;line-height:1.2;font-weight:600;}
+    .product-modal-rating{font-size:14px;color:#f59e0b;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+    .product-modal-rating .stars{font-size:16px;}
+    .product-modal-rating .reviews{color:#6b7280;font-size:13px;}
+    .product-modal-price{font-size:24px;color:#1a1a1a;margin-bottom:20px;display:flex;align-items:center;gap:12px;}
+    .product-modal-price .current{color:#1a1a1a;font-weight:600;}
+    .product-modal-price .old{font-size:16px;color:#9ca3af;text-decoration:line-through;}
+    .product-modal-price .discount{background:#ef4444;color:white;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:500;}
+    .product-modal-description{font-size:14px;line-height:1.6;color:#4b5563;margin-bottom:24px;}
+    
+    .product-options{margin-bottom:24px;}
+    .size-selector h3,.color-selector h3,.quantity-selector h3{font-size:12px;color:#1a1a1a;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.5px;font-weight:500;}
+    .size-options{display:flex;gap:8px;margin-bottom:20px;}
+    .size-btn{width:40px;height:40px;border:1px solid #d1d5db;background:#ffffff;font-size:12px;cursor:pointer;transition:all .2s;color:#374151;border-radius:6px;}
+    .size-btn:hover{background:#f9fafb;border-color:#2563eb;}
+    .size-btn.selected{background:#2563eb;border-color:#2563eb;color:white;}
+    .color-options{display:flex;gap:8px;margin-bottom:20px;}
+    .color-btn{width:32px;height:32px;border:2px solid #d1d5db;border-radius:50%;cursor:pointer;transition:all .2s;position:relative;}
+    .color-btn:hover{transform:scale(1.05);border-color:#2563eb;}
+    .color-btn.selected{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,0.1);}
+    .color-btn.selected::after{content:'✓';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:white;font-weight:bold;font-size:10px;text-shadow:0 1px 2px rgba(0,0,0,0.3);}
+    
+    .quantity-controls{display:flex;align-items:center;gap:12px;background:#f9fafb;padding:8px;border-radius:6px;border:1px solid #e5e5e5;width:fit-content;}
+    .qty-btn{width:32px;height:32px;border:1px solid #d1d5db;background:#ffffff;font-size:14px;cursor:pointer;border-radius:4px;color:#374151;transition:all .2s;}
+    .qty-btn:hover{background:#f9fafb;border-color:#2563eb;}
+    #quantityInput{width:50px;height:32px;text-align:center;border:1px solid #d1d5db;font-size:12px;background:#ffffff;color:#1a1a1a;border-radius:4px;}
+    
+    .product-actions{display:flex;gap:12px;margin-bottom:24px;}
+    .add-to-cart-btn{flex:1;font-size:12px;background:#2563eb;color:white;border:none;padding:12px 20px;cursor-pointer;transition:all .2s;border-radius:6px;font-weight:500;box-shadow:0 2px 8px rgba(37,99,235,0.2);}
+    .add-to-cart-btn:hover{background:#1d4ed8;transform:translateY(-1px);box-shadow:0 4px 12px rgba(37,99,235,0.3);}
+    .buy-now-btn{flex:1;font-size:12px;background:#10b981;color:white;border:none;padding:12px 20px;cursor-pointer;transition:all .2s;border-radius:6px;font-weight:500;box-shadow:0 2px 8px rgba(16,185,129,0.2);}
+    .buy-now-btn:hover{background:#059669;transform:translateY(-1px);box-shadow:0 4px 12px rgba(16,185,129,0.3);}
+    .wishlist-btn{flex:0.8;font-size:12px;background:#ffffff;color:#374151;border:1px solid #d1d5db;padding:12px 20px;cursor:pointer;transition:all .2s;border-radius:6px;font-weight:500;}
+    .wishlist-btn:hover{background:#f9fafb;border-color:#ef4444;color:#ef4444;}
+    .wishlist-btn.in-wishlist{background:#ef4444;border-color:#ef4444;color:white;}
+    
+    .product-features{border-top:1px solid #e5e5e5;padding-top:20px;}
+    .feature{display:flex;align-items:center;gap:12px;margin-bottom:12px;font-size:12px;color:#4b5563;}
+    .feature i{font-size:14px;color:#2563eb;width:16px;text-align:center;}
+    .feature strong{color:#1a1a1a;font-weight:500;}
+    
+    .toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--grass);color:white;font-family:'Press Start 2P',cursive;font-size:9px;padding:14px 24px;border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);opacity:0;transition:all .3s;z-index:9998;white-space:nowrap;}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+    
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:1000;display:none;}
+    .overlay.on{display:block;}
+    .drawer{position:fixed;top:0;right:-420px;width:400px;height:100vh;background:var(--cream);border-left:4px solid var(--ink);z-index:1001;transition:right .3s;display:flex;flex-direction:column;box-shadow:-8px 0 0 var(--stone);}
+    .drawer.on{right:0;}
+    .dr-head{padding:20px 24px;border-bottom:3px solid var(--ink);background:var(--parchment);display:flex;justify-content:space-between;align-items:center;}
+    .dr-head h3{font-family:'Press Start 2P',cursive;font-size:10px;color:var(--ink);}
+    .dr-close{background:var(--ink);border:none;color:white;width:32px;height:32px;cursor:pointer;font-family:'Press Start 2P',cursive;font-size:10px;}
+    .dr-body{flex:1;overflow-y:auto;padding:16px;}
+    .citem{display:flex;gap:12px;padding:12px 0;border-bottom:2px solid var(--parchment);}
+    .cipic{width:56px;height:56px;background:var(--parchment);border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
+    .ciinfo{flex:1;}
+    .ciname{font-weight:900;font-size:14px;}
+    .cicat{font-size:11px;color:var(--muted);}
+    .ciprice{font-family:var(--font-display);font-size:20px;color:var(--grass-dark);margin-top:4px;letter-spacing:.02em;}
+    .cidel{background:none;border:none;cursor:pointer;color:#bbb;font-size:15px;align-self:center;}
+    .cidel:hover{color:#D32F2F;}
+    .cart-empty{text-align:center;padding:60px 20px;font-family:'Press Start 2P',cursive;font-size:9px;color:var(--stone);line-height:2.5;}
+    .dr-foot{padding:20px 24px;border-top:3px solid var(--ink);background:var(--parchment);display:none;}
+    .dr-total{display:flex;justify-content:space-between;margin-bottom:14px;font-weight:900;}
+    .dr-total strong{font-family:var(--font-display);font-size:28px;color:var(--grass-dark);letter-spacing:.02em;}
+    .chk-btn{width:100%;font-family:'Press Start 2P',cursive;font-size:9px;background:var(--ink);color:white;border:3px solid var(--ink);padding:15px;cursor:pointer;box-shadow:4px 4px 0 var(--grass);transition:all .12s;letter-spacing:1px;}
+    .chk-btn:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--grass);}
+    
+    .cat-nav{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:30px 0;}
+    .cat-btn{font-family:'Press Start 2P',cursive;font-size:8px;background:var(--cream);color:var(--ink);border:3px solid var(--ink);padding:10px 20px;cursor:pointer;box-shadow:4px 4px 0 var(--stone);transition:all .12s;letter-spacing:1px;text-decoration:none;display:inline-block;min-width:120px;text-align:center;}
+    .cat-btn:hover{background:var(--grass);color:white;transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink);}
+    .cat-btn.active{background:var(--ink);color:white;box-shadow:4px 4px 0 var(--grass);}
+    
+    @media(max-width:900px){
+      .prod-grid{grid-template-columns:repeat(2,1fr);}
+      .sec{padding:48px 24px;}
+      .navbar{padding:0 20px;}
+      .cat-nav{gap:12px;}
+      .cat-btn{font-size:7px;padding:10px 18px;}
+      .product-modal-content{grid-template-columns:1fr;gap:30px;padding:40px 24px;}
+      .product-modal-left{position:static;}
+      .product-modal-title{font-size:36px;}
+      .product-modal-price{font-size:28px;}
+    }
+    
+    @media(max-width:600px){
+      .prod-grid{grid-template-columns:1fr;gap:16px;}
+      .navbar{padding:0 16px;height:60px;}
+      .nav-logo img{height:40px;}
+      .sec{padding:32px 16px;}
+      .cat-nav{gap:8px;}
+      .cat-btn{font-size:6px;padding:8px 14px;}
+      .product-modal-content{padding:20px 16px;}
+      .product-modal-title{font-size:28px;}
+      .product-modal-price{font-size:24px;}
+      .product-actions{flex-direction:column;}
+      .size-options{gap:8px;}
+      .size-btn{width:45px;height:45px;font-size:8px;}
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"><div class="cursor-inner"></div></div>
+<div class="cursor-outer" id="cursorOuter"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a class="nav-logo" href="index.html"><img src="assets/skull-text.png" alt="SKULL Streetwear"></a>
+  <div class="nav-icons">
+    <div class="cart-wrap" onclick="toggleCart()" style="cursor:none">
+      <i class="fa fa-shopping-cart"></i>
+      <span class="cart-badge" id="cartCount">0</span>
+    </div>
+    <i class="fa fa-heart" style="cursor:none" onclick="toggleWishlist()" title="Favourites"></i>
+    <button class="nav-icon-btn user-trigger" id="userTrigger" style="cursor:none" onclick="toggleUserMenu()" title="My Account">
+      <i class="fa fa-user"></i>
+    </button>
+  </div>
+</nav>
+
+<!-- TICKER -->
+<div class="ticker"><div class="ticker-inner" id="tickerInner"></div></div>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <a href="index.html">HOME</a><span class="sep">›</span>
+  <span class="cur">ALL PRODUCTS</span>
+</div>
+
+<!-- PRODUCTS SECTION -->
+<section class="sec" id="catalog-page">
+  <div class="sec-inner">
+    <div class="sec-hdr">
+      <p class="sec-eyebrow">⛏ COMPLETE COLLECTION</p>
+      <h2 class="sec-title">SHOP ALL PRODUCTS</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="cat-nav" id="categoryNav"></div>
+    <div class="prod-grid" id="productGrid"></div>
+  </div>
+</section>
+
+<!-- CART DRAWER -->
+<div class="overlay" id="overlay" onclick="closeCart()"></div>
+<div class="drawer" id="cartDrawer">
+  <div class="dr-head">
+    <h3>🛒 SHOPPING CART</h3>
+    <button class="dr-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="dr-body" id="cartBody"></div>
+  <div class="dr-foot" id="cartFoot">
+    <div class="dr-total">
+      <span>TOTAL:</span>
+      <strong id="cartTotal">₹0</strong>
+    </div>
+    <button class="chk-btn" onclick="proceedToCheckout()">PROCEED TO CHECKOUT</button>
+  </div>
+</div>
+
+<!-- WISHLIST MODAL -->
+<div class="overlay" id="wishlistOverlay" onclick="closeWishlist()"></div>
+<div class="drawer" id="wishlistDrawer">
+  <div class="dr-head">
+    <h3>❤️ MY WISHLIST</h3>
+    <button class="dr-close" onclick="closeWishlist()">✕</button>
+  </div>
+  <div class="dr-body" id="wishlistBody"></div>
+</div>
+
+<!-- PRODUCT DETAIL MODAL -->
+<div class="overlay" id="productOverlay" onclick="closeProductModal()"></div>
+<div class="product-modal" id="productModal">
+  <button class="product-close" onclick="closeProductModal()">✕</button>
+  <div class="product-modal-content">
+    <div class="product-modal-left">
+      <div class="product-main-image">
+        <img id="modalProductImage" src="" alt="">
+      </div>
+      <div class="product-thumbnails" id="productThumbnails"></div>
+    </div>
+    <div class="product-modal-right">
+      <div class="product-modal-category" id="modalProductCategory"></div>
+      <h1 class="product-modal-title" id="modalProductTitle"></h1>
+      <div class="product-modal-rating" id="modalProductRating"></div>
+      <div class="product-modal-price" id="modalProductPrice"></div>
+      <div class="product-modal-description" id="modalProductDescription"></div>
+      
+      <div class="product-options">
+        <div class="size-selector">
+          <h3>SELECT SIZE</h3>
+          <div class="size-options" id="sizeOptions">
+            <button class="size-btn" data-size="S">S</button>
+            <button class="size-btn" data-size="M">M</button>
+            <button class="size-btn" data-size="L">L</button>
+            <button class="size-btn" data-size="XL">XL</button>
+          </div>
+        </div>
+        
+        <div class="color-selector">
+          <h3>SELECT COLOR</h3>
+          <div class="color-options" id="colorOptions">
+            <button class="color-btn" data-color="black" style="background:#000;"></button>
+            <button class="color-btn" data-color="white" style="background:#fff;border-color:rgba(255,255,255,0.5);"></button>
+            <button class="color-btn" data-color="gray" style="background:#888;"></button>
+          </div>
+        </div>
+        
+        <div class="quantity-selector">
+          <h3>QUANTITY</h3>
+          <div class="quantity-controls">
+            <button class="qty-btn" onclick="changeQuantity(-1)">−</button>
+            <input type="number" id="quantityInput" value="1" min="1" max="10" readonly>
+            <button class="qty-btn" onclick="changeQuantity(1)">+</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="product-actions">
+        <button class="add-to-cart-btn" onclick="addToCartFromModal()">
+          <i class="fa fa-shopping-cart"></i> ADD TO CART
+        </button>
+        <button class="buy-now-btn" onclick="buyNow()">
+          <i class="fa fa-bolt"></i> BUY NOW
+        </button>
+        <button class="wishlist-btn" onclick="toggleWishlistFromModal()">
+          <i class="fa fa-heart"></i> WISHLIST
+        </button>
+      </div>
+      
+      <div class="product-features">
+        <div class="feature">
+          <i class="fa fa-truck"></i>
+          <div>
+            <strong>FREE SHIPPING</strong><br>
+            On orders above ₹999
+          </div>
+        </div>
+        <div class="feature">
+          <i class="fa fa-undo"></i>
+          <div>
+            <strong>30 DAY RETURNS</strong><br>
+            Easy return policy
+          </div>
+        </div>
+        <div class="feature">
+          <i class="fa fa-shield"></i>
+          <div>
+            <strong>100% AUTHENTIC</strong><br>
+            Genuine products only
+          </div>
+        </div>
+        <div class="feature">
+          <i class="fa fa-lock"></i>
+          <div>
+            <strong>SECURE PAYMENT</strong><br>
+            Safe transactions
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="store-utils.js"></script>
+<script>
+// PRODUCTS DATA
+const products = [
+  {id:1,name:'Grunge Skull Tee',price:599,category:'TOPS',image:'assets/grunge-tee.png',badge:'new',rating:4.5,reviews:234,oldPrice:799,description:'Premium quality grunge-style skull graphic tee made from 100% organic cotton. Features distressed skull artwork with vintage wash effect for authentic streetwear look.'},
+  {id:2,name:'Death Drop Hoodie',price:1299,category:'TOPS',image:'assets/death-drop-hoodie.png',badge:'hot',rating:4.8,reviews:189,oldPrice:1599,description:'Heavyweight fleece hoodie with death drop skull graphic. Kangaroo pocket, adjustable hood, and ribbed cuffs for maximum comfort and style.'},
+  {id:3,name:'Moto Skull Joggers',price:999,category:'BOTTOMS',image:'assets/moto-skull-joggers.png',badge:null,rating:4.6,reviews:156,description:'Motorcycle-inspired joggers with skull embroidery. Features elastic waistband, side pockets, and tapered fit for modern streetwear aesthetic.'},
+  {id:4,name:'Skull Snapback Cap',price:399,category:'ACCESSORIES',image:'assets/skull-snapback-cap.png',badge:'new',rating:4.4,reviews:98,description:'Classic snapback cap with embroidered skull logo. Adjustable strap for perfect fit, flat brim, and structured crown maintain shape.'},
+  {id:5,name:'Skull Sneakers',price:2499,category:'FOOTWEAR',image:'assets/skull-sneakers.png',badge:'hot',rating:4.9,reviews:312,oldPrice:2999,description:'High-top sneakers with skull motif detailing. Premium leather upper, cushioned insole, and durable rubber outsole for all-day comfort.'},
+  {id:6,name:'Pixel Skull Necklace',price:799,category:'JEWELLERY',image:'assets/pixel-necklace.png',badge:null,rating:4.3,reviews:67,description:'Unique pixelated skull pendant on stainless steel chain. 18k gold plating with adjustable length. Perfect for gaming and streetwear enthusiasts.'},
+  {id:7,name:'Skull Oversized Tee',price:1899,category:'TOPS',image:'assets/skull-oversized.png',badge:null,rating:4.7,reviews:145,description:'Oversized fit tee with large skull graphic. Premium heavyweight cotton, dropped shoulders, and extended hem for contemporary streetwear silhouette.'},
+  {id:8,name:'Camo Cargo Pants',price:1199,category:'BOTTOMS',image:'assets/camo-cargo-pants.png',badge:'sale',rating:4.5,reviews:89,oldPrice:1499,description:'Military-inspired cargo pants in camouflage pattern. Multiple pockets, adjustable waist, and relaxed fit. Perfect for urban exploration.'},
+  {id:9,name:'Reaper Skull Tee',price:699,category:'TOPS',image:'assets/reaper-tee.png',badge:'new',rating:4.6,reviews:201,description:'Grim reaper skull graphic tee with atmospheric artwork. Soft cotton blend, tag-free neck label, and pre-shrunk for lasting fit.'},
+  {id:10,name:'Bone Zip Hoodie',price:1599,category:'TOPS',image:'assets/bone-zip-hoodie.png',badge:null,rating:4.8,reviews:167,description:'Full-zip hoodie with bone skull graphic. Front pockets, drawstring hood, and metal zipper. Premium fleece construction for warmth.'},
+  {id:11,name:'Street Cargo Trousers',price:1099,category:'BOTTOMS',image:'assets/street-cargo-trousers.png',badge:null,rating:4.4,reviews:89,description:'Modern cargo trousers with skull accents. Slim fit with cargo pockets, belt loops, and stretch fabric for comfort and mobility.'},
+  {id:12,name:'Creeper Beanie',price:399,category:'ACCESSORIES',image:'assets/creeper-beanie.png',badge:'hot',rating:4.5,reviews:134,description:'Skull creeper-style beanie with fold-up cuff. Soft acrylic knit, stretch fit, and embroidered logo for subtle branding.'},
+  {id:13,name:'Combat Boots',price:2999,category:'FOOTWEAR',image:'assets/combat-boots.png',badge:null,rating:4.9,reviews:278,description:'Heavy-duty combat boots with skull buckles. Leather upper, steel toe, lace-up closure, and rugged sole for maximum durability.'},
+  {id:14,name:'Skull Ring',price:599,category:'JEWELLERY',image:'assets/skull-ring.png',badge:null,rating:4.2,reviews:45,description:'Sterling silver skull ring with detailed carving. Polished finish, comfortable fit, and hypoallergenic. Available in multiple sizes.'},
+  {id:15,name:'Void Pullover Hoodie',price:1399,category:'TOPS',image:'assets/void-pullover-hoodie.png',badge:'sale',rating:4.7,reviews:198,oldPrice:1799,description:'Pullover hoodie with void skull design. Kangaroo pocket, lined hood, and ribbed cuffs. French terry fabric for premium feel.'},
+  {id:16,name:'Skull Wide Leg Pants',price:999,category:'BOTTOMS',image:'assets/skull-wide-leg-pants.png',badge:null,rating:4.5,reviews:112,description:'Wide-leg trousers with subtle skull pattern. High waist, side pockets, and flowy silhouette. Perfect for streetwear and casual occasions.'},
+  {id:17,name:'Crossbody Bag',price:799,category:'ACCESSORIES',image:'assets/crossbody-bag.png',badge:'new',rating:4.3,reviews:76,description:'Crossbody bag with skull clasp. Multiple compartments, adjustable strap, and durable canvas construction. Perfect for daily essentials.'},
+  {id:18,name:'Street Trainers',price:1999,category:'FOOTWEAR',image:'assets/street-trainers.png',badge:'hot',rating:4.6,reviews:234,description:'Street-style trainers with skull accents. Mesh upper, cushioned sole, and lace-up closure. Lightweight and breathable for all-day wear.'},
+  {id:19,name:'Bone Bracelet',price:449,category:'JEWELLERY',image:'assets/bone-bracelet.png',badge:null,rating:4.4,reviews:58,description:'Bone skull bracelet on leather cord. Adjustable closure, natural bone material, and tribal-inspired design. Unique piece for collection.'},
+  {id:20,name:'Skull Bucket Hat',price:349,category:'ACCESSORIES',image:'assets/skull-bucket-hat.png',badge:'new',rating:4.1,reviews:92,description:'Bucket hat with embroidered skull logo. Cotton canvas, wide brim, and unisex fit. Perfect for sun protection and street style.'},
+  {id:21,name:'Pixel Belt',price:599,category:'ACCESSORIES',image:'assets/pixel-belt.png',badge:null,rating:4.3,reviews:67,description:'Pixelated skull buckle belt. Genuine leather, adjustable length, and retro gaming aesthetic. Perfect for streetwear enthusiasts.'},
+  {id:22,name:'Skull Sunglasses',price:799,category:'ACCESSORIES',image:'assets/skull-sunglasses.png',badge:null,rating:4.5,reviews:123,description:'Stylish sunglasses with skull temple design. UV protection lenses, durable frame, and comfortable fit. Perfect for sunny days.'},
+  {id:23,name:'Skull Wallet',price:499,category:'ACCESSORIES',image:'assets/skull-wallet.png',badge:null,rating:4.4,reviews:89,description:'Bifold wallet with skull embossing. Genuine leather, multiple card slots, and RFID protection. Compact and functional design.'},
+  {id:24,name:'Messenger Bag',price:899,category:'ACCESSORIES',image:'assets/messenger-bag.png',badge:null,rating:4.6,reviews:145,description:'Messenger bag with skull hardware. Multiple compartments, laptop sleeve, and adjustable shoulder strap. Perfect for work and travel.'},
+  {id:25,name:'Skull Earrings',price:349,category:'JEWELLERY',image:'assets/skull-earrings.png',badge:null,rating:4.2,reviews:34,description:'Skull stud earrings in sterling silver. Hypoallergenic posts, secure backing, and detailed carving. Perfect for everyday wear.'},
+  {id:26,name:'Bone Slides',price:299,category:'FOOTWEAR',image:'assets/bone-slides.png',badge:'sale',rating:4.0,reviews:56,oldPrice:399,description:'Casual slides with bone skull design. Comfortable footbed, non-slip sole, and easy slip-on style. Perfect for beach and casual wear.'}
+];
+
+// GLOBAL STATE
+let cart = JSON.parse(localStorage.getItem('skullCart') || '[]');
+let wishlist = JSON.parse(localStorage.getItem('skullWishlist') || '[]');
+
+// INIT
+document.addEventListener('DOMContentLoaded', () => {
+  renderCategories();
+  renderProducts();
+  updateCartCount();
+  initTicker();
+  initCursor();
+  syncUserTrigger();
+});
+
+// RENDER CATEGORIES
+function renderCategories() {
+  const categories = ['ALL', 'TOPS', 'BOTTOMS', 'ACCESSORIES', 'FOOTWEAR', 'JEWELLERY'];
+  const nav = document.getElementById('categoryNav');
+  nav.innerHTML = categories.map(cat => `
+    <button class="cat-btn ${cat === 'ALL' ? 'active' : ''}" onclick="filterByCategory('${cat}')">
+      ${cat === 'ALL' ? '⛏ ALL PRODUCTS' : cat}
+    </button>
+  `).join('');
+}
+
+// CATEGORY FILTER
+let currentCategory = 'ALL';
+function filterByCategory(category) {
+  currentCategory = category;
+  
+  // Update active button
+  document.querySelectorAll('.cat-btn').forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.textContent.includes(category === 'ALL' ? 'ALL' : category)) {
+      btn.classList.add('active');
+    }
+  });
+  
+  // Update section title
+  const title = document.querySelector('#catalog-page .sec-title');
+  const eyebrow = document.querySelector('#catalog-page .sec-eyebrow');
+  
+  if (category === 'ALL') {
+    title.textContent = 'SHOP ALL PRODUCTS';
+    eyebrow.textContent = '⛏ COMPLETE COLLECTION';
+  } else {
+    title.textContent = `SHOP ${category}`;
+    eyebrow.textContent = `⛏ ${category} COLLECTION`;
+  }
+  
+  renderProducts();
+}
+
+// RENDER PRODUCTS
+function renderProducts() {
+  const grid = document.getElementById('productGrid');
+  const filteredProducts = currentCategory === 'ALL' 
+    ? products 
+    : products.filter(p => p.category === currentCategory);
+  
+  if (filteredProducts.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;font-family:\'Press Start 2P\',cursive;font-size:10px;color:var(--stone);">No products found in this category.</div>';
+    return;
+  }
+  
+  grid.innerHTML = filteredProducts.map(p => `
+    <div class="prod-card" onclick="openProductModal(${p.id})">
+      <div class="prod-img ${getCategoryBg(p.category)}">
+        ${p.badge ? `<span class="badge b-${p.badge}">${p.badge.toUpperCase()}</span>` : ''}
+        <div class="wish ${wishlist.includes(p.id) ? 'on' : ''}" onclick="event.stopPropagation(); toggleWishlistItem(${p.id})">
+          <i class="fa fa-heart"></i>
+        </div>
+        <img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;">
+      </div>
+      <div class="prod-body">
+        <div class="prod-cat">${p.category}</div>
+        <div class="prod-name">${p.name}</div>
+        <div class="prod-stars">
+          ${'★'.repeat(Math.floor(p.rating))}
+          <span class="prod-rating">${p.rating} (${p.reviews})</span>
+        </div>
+        <div class="prod-foot">
+          <div class="prod-price ${p.oldPrice ? 'sale' : ''}">
+            ₹${p.price}
+            ${p.oldPrice ? `<span class="old">₹${p.oldPrice}</span>` : ''}
+          </div>
+          <button class="add-btn" onclick="event.stopPropagation(); addToCart(${p.id})">🛒 ADD</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// CART FUNCTIONS
+function addToCart(productId) {
+  const product = products.find(p => p.id === productId);
+  cart.push({...product, cartId: Date.now()});
+  localStorage.setItem('skullCart', JSON.stringify(cart));
+  updateCartCount();
+  showToast(`✅ ${product.name} added to cart!`);
+  
+  const btn = event.target;
+  btn.textContent = '✅ ADDED!';
+  btn.classList.add('done');
+  setTimeout(() => {
+    btn.textContent = '🛒 ADD';
+    btn.classList.remove('done');
+  }, 2000);
+}
+
+function updateCartCount() {
+  document.getElementById('cartCount').textContent = cart.length;
+}
+
+function toggleCart() {
+  const drawer = document.getElementById('cartDrawer');
+  const overlay = document.getElementById('overlay');
+  drawer.classList.toggle('on');
+  overlay.classList.toggle('on');
+  if (drawer.classList.contains('on')) {
+    renderCart();
+  }
+}
+
+function closeCart() {
+  document.getElementById('cartDrawer').classList.remove('on');
+  document.getElementById('overlay').classList.remove('on');
+}
+
+function renderCart() {
+  const body = document.getElementById('cartBody');
+  const foot = document.getElementById('cartFoot');
+  
+  if (cart.length === 0) {
+    body.innerHTML = '<div class="cart-empty">🛒 Your cart is empty<br>Add some awesome products!</div>';
+    foot.style.display = 'none';
+  } else {
+    body.innerHTML = cart.map(item => `
+      <div class="citem">
+        <div class="cipic"><img src="${item.image}" alt="${item.name}" style="width:100%;height:100%;object-fit:cover;"></div>
+        <div class="ciinfo">
+          <div class="ciname">${item.name}</div>
+          <div class="cicat">${item.category}</div>
+          <div class="ciprice">₹${item.price}</div>
+        </div>
+        <button class="cidel" onclick="removeFromCart(${item.cartId})">
+          <i class="fa fa-trash"></i>
+        </button>
+      </div>
+    `).join('');
+    
+    const total = cart.reduce((sum, item) => sum + item.price, 0);
+    document.getElementById('cartTotal').textContent = `₹${total}`;
+    foot.style.display = 'block';
+  }
+}
+
+function removeFromCart(cartId) {
+  cart = cart.filter(item => item.cartId !== cartId);
+  localStorage.setItem('skullCart', JSON.stringify(cart));
+  updateCartCount();
+  renderCart();
+  showToast('🗑️ Item removed from cart');
+}
+
+function checkout() {
+  if (cart.length === 0) {
+    showToast('🛒 Your cart is empty!');
+    return;
+  }
+  
+  // Save cart data to localStorage for checkout page
+  localStorage.setItem('checkoutCart', JSON.stringify(cart));
+  
+  // Redirect to checkout page
+  window.location.href = 'checkout.html';
+}
+
+function proceedToCheckout() {
+  checkout();
+}
+
+function syncUserTrigger() {
+  const trigger = document.getElementById('userTrigger');
+  if (!trigger) return;
+
+  const user = window.SKULLStore ? SKULLStore.getCurrentUser() : JSON.parse(localStorage.getItem('skullUser') || 'null');
+  if (!user) {
+    trigger.innerHTML = '<i class="fa fa-user"></i>';
+    trigger.title = 'Login';
+    return;
+  }
+
+  const name = String(user.name || user.firstName || user.email || 'U').trim();
+  trigger.textContent = name.charAt(0).toUpperCase();
+  trigger.title = name;
+}
+
+function toggleUserMenu() {
+  const user = window.SKULLStore ? SKULLStore.getCurrentUser() : JSON.parse(localStorage.getItem('skullUser') || 'null');
+  if (!user) {
+    window.location.href = 'login.html?redirect=skull-combined.html';
+    return;
+  }
+
+  window.location.href = 'profile.html';
+}
+
+// WISHLIST FUNCTIONS
+function toggleWishlist() {
+  const drawer = document.getElementById('wishlistDrawer');
+  const overlay = document.getElementById('wishlistOverlay');
+  drawer.classList.toggle('on');
+  overlay.classList.toggle('on');
+  if (drawer.classList.contains('on')) {
+    renderWishlist();
+  }
+}
+
+function closeWishlist() {
+  document.getElementById('wishlistDrawer').classList.remove('on');
+  document.getElementById('wishlistOverlay').classList.remove('on');
+}
+
+function toggleWishlistItem(productId) {
+  const index = wishlist.indexOf(productId);
+  if (index > -1) {
+    wishlist.splice(index, 1);
+    showToast('💔 Removed from wishlist');
+  } else {
+    wishlist.push(productId);
+    showToast('❤️ Added to wishlist!');
+  }
+  localStorage.setItem('skullWishlist', JSON.stringify(wishlist));
+  renderProducts();
+}
+
+function renderWishlist() {
+  const body = document.getElementById('wishlistBody');
+  const wishlistProducts = products.filter(p => wishlist.includes(p.id));
+  
+  if (wishlistProducts.length === 0) {
+    body.innerHTML = '<div class="cart-empty">❤️ Your wishlist is empty<br>Save your favorite items!</div>';
+  } else {
+    body.innerHTML = wishlistProducts.map(p => `
+      <div class="citem">
+        <div class="cipic"><img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;"></div>
+        <div class="ciinfo">
+          <div class="ciname">${p.name}</div>
+          <div class="cicat">${p.category}</div>
+          <div class="ciprice">₹${p.price}</div>
+        </div>
+        <button class="cidel" onclick="toggleWishlistItem(${p.id})">
+          <i class="fa fa-trash"></i>
+        </button>
+      </div>
+    `).join('');
+  }
+}
+
+// UTILITY FUNCTIONS
+function getCategoryBg(category) {
+  const bgs = {
+    'TOPS': 'pt',
+    'BOTTOMS': 'pb-c',
+    'ACCESSORIES': 'pa',
+    'FOOTWEAR': 'pa',
+    'JEWELLERY': 'pa'
+  };
+  return bgs[category] || 'pa';
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2600);
+}
+
+function initTicker() {
+  const items = ['👕 TOPS','👖 BOTTOMS','🧢 ACCESSORIES','👟 FOOTWEAR','💎 JEWELLERY','⭐ FREE SHIPPING ABOVE ₹999','💀 SKULL STREETWEAR','⛏ NEW DROPS WEEKLY'];
+  const ticker = document.getElementById('tickerInner');
+  [...items, ...items, ...items].forEach(item => {
+    const span = document.createElement('span');
+    span.textContent = item;
+    ticker.appendChild(span);
+  });
+}
+
+function initCursor() {
+  const cursor = document.getElementById('cursor');
+  const cursorOuter = document.getElementById('cursorOuter');
+  let mx = 0, my = 0, ox = 0, oy = 0;
+  
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX;
+    my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+  
+  function animateCursor() {
+    ox += (mx - ox) * 0.15;
+    oy += (my - oy) * 0.15;
+    cursorOuter.style.left = ox + 'px';
+    cursorOuter.style.top = oy + 'px';
+    requestAnimationFrame(animateCursor);
+  }
+  animateCursor();
+}
+
+// PRODUCT MODAL FUNCTIONS
+let currentProduct = null;
+let selectedSize = 'M';
+let selectedColor = 'black';
+let quantity = 1;
+
+function openProductModal(productId) {
+  currentProduct = products.find(p => p.id === productId);
+  if (!currentProduct) return;
+  
+  // Reset selections
+  selectedSize = 'M';
+  selectedColor = 'black';
+  quantity = 1;
+  document.getElementById('quantityInput').value = 1;
+  
+  // Update modal content
+  document.getElementById('modalProductImage').src = currentProduct.image;
+  document.getElementById('modalProductCategory').textContent = currentProduct.category;
+  document.getElementById('modalProductTitle').textContent = currentProduct.name;
+  document.getElementById('modalProductRating').innerHTML = `
+    <span class="stars">${'★'.repeat(Math.floor(currentProduct.rating))}</span>
+    <span class="reviews">${currentProduct.rating} (${currentProduct.reviews} reviews)</span>
+  `;
+  
+  // Update price with discount badge
+  const priceHtml = [];
+  priceHtml.push(`<span class="current">₹${currentProduct.price}</span>`);
+  if (currentProduct.oldPrice) {
+    const discount = Math.round(((currentProduct.oldPrice - currentProduct.price) / currentProduct.oldPrice) * 100);
+    priceHtml.push(`<span class="old">₹${currentProduct.oldPrice}</span>`);
+    priceHtml.push(`<span class="discount">-${discount}%</span>`);
+  }
+  document.getElementById('modalProductPrice').innerHTML = priceHtml.join('');
+  
+  document.getElementById('modalProductDescription').textContent = currentProduct.description;
+  
+  // Generate thumbnails
+  const thumbnails = document.getElementById('productThumbnails');
+  thumbnails.innerHTML = `
+    <img src="${currentProduct.image}" alt="View 1" class="active" onclick="changeMainImage('${currentProduct.image}', this)">
+    <img src="${currentProduct.image}" alt="View 2" onclick="changeMainImage('${currentProduct.image}', this)">
+    <img src="${currentProduct.image}" alt="View 3" onclick="changeMainImage('${currentProduct.image}', this)">
+    <img src="${currentProduct.image}" alt="View 4" onclick="changeMainImage('${currentProduct.image}', this)">
+  `;
+  
+  // Update size and color selections
+  updateSizeSelection();
+  updateColorSelection();
+  updateWishlistButton();
+  
+  // Show modal with smooth animation
+  setTimeout(() => {
+    document.getElementById('productOverlay').classList.add('on');
+    document.getElementById('productModal').classList.add('on');
+    document.body.style.overflow = 'hidden';
+  }, 100);
+}
+
+function closeProductModal() {
+  document.getElementById('productOverlay').classList.remove('on');
+  document.getElementById('productModal').classList.remove('on');
+  document.body.style.overflow = '';
+  currentProduct = null;
+}
+
+function changeMainImage(imageSrc, thumbnail) {
+  document.getElementById('modalProductImage').src = imageSrc;
+  
+  // Update active thumbnail
+  document.querySelectorAll('.product-thumbnails img').forEach(img => {
+    img.classList.remove('active');
+  });
+  if (thumbnail) {
+    thumbnail.classList.add('active');
+  }
+}
+
+function changeQuantity(delta) {
+  quantity = Math.max(1, Math.min(10, quantity + delta));
+  document.getElementById('quantityInput').value = quantity;
+}
+
+function updateSizeSelection() {
+  document.querySelectorAll('.size-btn').forEach(btn => {
+    btn.classList.remove('selected');
+    if (btn.dataset.size === selectedSize) {
+      btn.classList.add('selected');
+    }
+  });
+}
+
+function updateColorSelection() {
+  document.querySelectorAll('.color-btn').forEach(btn => {
+    btn.classList.remove('selected');
+    if (btn.dataset.color === selectedColor) {
+      btn.classList.add('selected');
+    }
+  });
+}
+
+function updateWishlistButton() {
+  const wishlistBtn = document.querySelector('.wishlist-btn');
+  if (wishlist.includes(currentProduct.id)) {
+    wishlistBtn.innerHTML = '<i class="fa fa-heart"></i> REMOVE FROM WISHLIST';
+    wishlistBtn.classList.add('in-wishlist');
+  } else {
+    wishlistBtn.innerHTML = '<i class="fa fa-heart"></i> WISHLIST';
+    wishlistBtn.classList.remove('in-wishlist');
+  }
+}
+
+function addToCartFromModal() {
+  if (!currentProduct) return;
+  
+  const cartItem = {
+    ...currentProduct,
+    cartId: Date.now(),
+    quantity: quantity,
+    size: selectedSize,
+    color: selectedColor
+  };
+  
+  for (let i = 0; i < quantity; i++) {
+    cart.push({...cartItem, cartId: Date.now() + i});
+  }
+  
+  localStorage.setItem('skullCart', JSON.stringify(cart));
+  updateCartCount();
+  showToast(`✅ ${currentProduct.name} (${quantity}x, Size: ${selectedSize}, Color: ${selectedColor}) added to cart!`);
+  
+  // Show checkout option
+  setTimeout(() => {
+    if (confirm('🛒 Item added to cart! Go to checkout?')) {
+      closeProductModal();
+      checkout();
+    }
+  }, 1000);
+}
+
+function buyNow() {
+  if (!currentProduct) return;
+  
+  // Clear cart and add only this item
+  cart = [];
+  const cartItem = {
+    ...currentProduct,
+    cartId: Date.now(),
+    quantity: quantity,
+    size: selectedSize,
+    color: selectedColor
+  };
+  
+  for (let i = 0; i < quantity; i++) {
+    cart.push({...cartItem, cartId: Date.now() + i});
+  }
+  
+  localStorage.setItem('skullCart', JSON.stringify(cart));
+  updateCartCount();
+  showToast(`⚡ ${currentProduct.name} ready for checkout!`);
+  
+  // Go directly to checkout page
+  closeProductModal();
+  setTimeout(() => {
+    checkout();
+  }, 500);
+}
+
+function toggleWishlistFromModal() {
+  if (!currentProduct) return;
+  
+  const index = wishlist.indexOf(currentProduct.id);
+  if (index > -1) {
+    wishlist.splice(index, 1);
+    showToast('💔 Removed from wishlist');
+  } else {
+    wishlist.push(currentProduct.id);
+    showToast('❤️ Added to wishlist!');
+  }
+  
+  localStorage.setItem('skullWishlist', JSON.stringify(wishlist));
+  updateWishlistButton();
+  renderProducts();
+}
+
+// Size and color selection handlers
+document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('size-btn')) {
+    selectedSize = e.target.dataset.size;
+    updateSizeSelection();
+  }
+  
+  if (e.target.classList.contains('color-btn')) {
+    selectedColor = e.target.dataset.color;
+    updateColorSelection();
+  }
+});
+</script>
+
+</body>
+</html>

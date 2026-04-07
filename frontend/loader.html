@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SKULL — Loading</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    /* Full-screen video — centred, fills screen */
+    .loader-video {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      z-index: 1;
+    }
+
+    /* Fade-out overlay triggered by JS when video ends */
+    .fade-out {
+      position: fixed;
+      inset: 0;
+      background: #fff;
+      z-index: 10;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease-in;
+    }
+
+    .fade-out.go {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <video
+    class="loader-video"
+    id="loaderVid"
+    autoplay
+    muted
+    playsinline
+    preload="auto"
+  >
+    <source src="assets/loader_anim.webm" type="video/webm">
+    <source src="assets/loader_anim.mp4"  type="video/mp4">
+  </video>
+
+  <div class="fade-out" id="fadeOut"></div>
+
+  <script>
+    const vid = document.getElementById('loaderVid');
+    const fade = document.getElementById('fadeOut');
+
+    // When video ends, fade to white then redirect
+    vid.addEventListener('ended', () => {
+      fade.classList.add('go');
+      setTimeout(() => {
+        window.location.href = 'skull-combined.html';
+      }, 520);
+    });
+
+    // Safety fallback — if video fails to play, go straight to shop
+    vid.addEventListener('error', () => {
+      window.location.href = 'skull-combined.html';
+    });
+
+    // Extra safety timeout (video duration ~4.5s + buffer)
+    setTimeout(() => {
+      window.location.href = 'skull-combined.html';
+    }, 6000);
+  </script>
+
+</body>
+</html>

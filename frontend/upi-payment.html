@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UPI Payment - SKULL Streetwear</title>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Press+Start+2P&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --cream: #f7f3ec;
+      --parchment: #eee8d5;
+      --ink: #16120c;
+      --muted: #8a7d68;
+      --stone: #a8a8a8;
+      --grass: #5d9e3f;
+      --grass-dark: #3e7228;
+      --danger: #d32f2f;
+      --font-body: "Nunito", sans-serif;
+      --font-display: "Anton", sans-serif;
+      --font-ui: "Press Start 2P", cursive;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      font-weight: 700;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top, rgba(93, 158, 63, 0.18), transparent 26%),
+        var(--cream);
+    }
+
+    .wrap {
+      width: min(1040px, calc(100% - 32px));
+      margin: 28px auto 40px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 340px;
+      gap: 24px;
+    }
+
+    .card,
+    .side {
+      background: white;
+      border: 3px solid var(--ink);
+      box-shadow: 8px 8px 0 var(--stone);
+    }
+
+    .card {
+      padding: 24px;
+    }
+
+    .side {
+      padding: 22px;
+      align-self: start;
+      position: sticky;
+      top: 22px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      font-family: var(--font-ui);
+      font-size: 8px;
+      color: var(--grass-dark);
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+      font-family: var(--font-display);
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    h1 {
+      font-size: 56px;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      font-size: 30px;
+      margin-bottom: 8px;
+    }
+
+    .copy {
+      margin: 0 0 20px;
+      color: var(--muted);
+      font-weight: 700;
+      line-height: 1.7;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .upi-id {
+      border: 2px solid var(--ink);
+      background: var(--parchment);
+      padding: 16px;
+      font-family: var(--font-ui);
+      font-size: 9px;
+      word-break: break-all;
+      margin-bottom: 18px;
+    }
+
+    .method-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .method {
+      border: 2px solid var(--ink);
+      background: white;
+      padding: 16px;
+      cursor: pointer;
+      text-align: center;
+      font-family: var(--font-ui);
+      font-size: 8px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .method.active {
+      background: var(--grass);
+      color: white;
+      transform: translate(-2px, -2px);
+      box-shadow: 5px 5px 0 var(--ink);
+    }
+
+    .qr-panel {
+      border: 2px solid var(--ink);
+      background: var(--parchment);
+      padding: 16px;
+      text-align: center;
+    }
+
+    .qr-frame {
+      width: min(280px, 100%);
+      aspect-ratio: 1;
+      margin: 0 auto 14px;
+      background: white;
+      border: 3px solid var(--ink);
+      display: grid;
+      place-items: center;
+      padding: 14px;
+    }
+
+    .qr-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .steps {
+      margin-top: 22px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .step {
+      display: flex;
+      gap: 12px;
+      align-items: start;
+      padding: 12px;
+      border: 2px solid var(--parchment);
+      background: #fbfaf6;
+    }
+
+    .step-index {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 2px solid var(--ink);
+      background: white;
+      display: grid;
+      place-items: center;
+      font-family: var(--font-ui);
+      font-size: 8px;
+      flex-shrink: 0;
+    }
+
+    .step strong {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    .step p {
+      margin: 0;
+      color: var(--muted);
+      font-weight: 800;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+
+    .btn {
+      border: 3px solid var(--ink);
+      background: white;
+      color: var(--ink);
+      cursor: pointer;
+      text-decoration: none;
+      font-family: "Press Start 2P", cursive;
+      font-size: 8px;
+      padding: 15px 18px;
+      box-shadow: 6px 6px 0 var(--stone);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+
+    .btn:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 8px 8px 0 var(--stone);
+    }
+
+    .btn.primary {
+      background: var(--ink);
+      color: white;
+      box-shadow: 6px 6px 0 var(--grass);
+    }
+
+    .btn.success {
+      background: var(--grass);
+      color: white;
+      box-shadow: 6px 6px 0 var(--ink);
+    }
+
+    .side-list {
+      display: grid;
+      gap: 14px;
+      margin: 18px 0;
+    }
+
+    .side-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--parchment);
+      font-weight: 800;
+    }
+
+    .side-item strong {
+      font-family: var(--font-display);
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      font-size: 24px;
+      color: var(--grass-dark);
+    }
+
+    .hint {
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.6;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--ink);
+      color: white;
+      border: 3px solid var(--ink);
+      box-shadow: 6px 6px 0 var(--grass);
+      padding: 14px 18px;
+      font-family: var(--font-ui);
+      font-size: 8px;
+      opacity: 0;
+      transition: all 0.25s ease;
+      z-index: 40;
+      max-width: calc(100vw - 24px);
+      text-align: center;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 960px) {
+      .wrap {
+        grid-template-columns: 1fr;
+      }
+
+      .side {
+        position: static;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .wrap {
+        width: min(100% - 16px, 100%);
+      }
+
+      .hero,
+      .method-grid,
+      .actions {
+        grid-template-columns: 1fr;
+      }
+
+      .card,
+      .side {
+        padding: 18px;
+      }
+
+      h1 {
+        font-size: 44px;
+      }
+
+      .btn {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="card">
+      <p class="eyebrow">UPI PAYMENT STEP</p>
+      <h1>Pay Securely</h1>
+      <p class="copy">Your order is already saved as pending payment. Once you confirm the transfer here, we mark it paid and send you to the confirmation page.</p>
+
+      <div class="hero">
+        <div>
+          <h2>Send to this UPI ID</h2>
+          <div class="upi-id" id="upiIdValue">joelvini2007@okicici</div>
+
+          <div class="method-grid">
+            <button class="method" type="button" data-method="app">
+              <i class="fa fa-mobile-screen-button"></i>
+              <span>PAY VIA APP</span>
+            </button>
+            <button class="method" type="button" data-method="qr">
+              <i class="fa fa-qrcode"></i>
+              <span>SCAN QR</span>
+            </button>
+          </div>
+
+          <div class="steps" id="stepsList"></div>
+
+          <div class="actions">
+            <a class="btn" id="backLink" href="checkout.html">BACK TO CHECKOUT</a>
+            <button class="btn primary" type="button" id="openUpiBtn">OPEN UPI APP</button>
+            <button class="btn success" type="button" id="confirmBtn">I COMPLETED PAYMENT</button>
+          </div>
+        </div>
+
+        <div class="qr-panel">
+          <p class="eyebrow">SCAN ANY UPI APP</p>
+          <div class="qr-frame">
+            <img id="qrImage" alt="UPI QR code">
+          </div>
+          <div style="font-weight:900;">Order <span id="orderNumber">#SKULL-000000</span></div>
+          <p class="hint">The QR code includes your exact payable amount and the store UPI ID.</p>
+        </div>
+      </div>
+    </section>
+
+    <aside class="side">
+      <p class="eyebrow">PAYMENT SUMMARY</p>
+      <h2 id="sideTitle">Order Total</h2>
+      <div class="side-list">
+        <div class="side-item"><span>Items</span><strong id="itemCount">0</strong></div>
+        <div class="side-item"><span>Subtotal</span><strong id="subtotalValue">₹0</strong></div>
+        <div class="side-item"><span>Shipping</span><strong id="shippingValue">₹0</strong></div>
+        <div class="side-item"><span>GST</span><strong id="taxValue">₹0</strong></div>
+        <div class="side-item"><span>Total</span><strong id="totalValue">₹0</strong></div>
+      </div>
+      <p class="hint" id="shippingHint">We keep the order pending until you confirm payment on this page.</p>
+    </aside>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="store-utils.js"></script>
+  <script>
+    (async function () {
+    const params = new URLSearchParams(window.location.search);
+    const sessionUser = SKULLStore.getCurrentUser();
+    const orderId = params.get("orderId");
+
+    if (!sessionUser || !SKULLStore.getAuthToken() || !orderId) {
+      window.location.replace("checkout.html");
+      return;
+    }
+
+    let order;
+    try {
+      order = await SKULLStore.getOrder(orderId);
+    } catch (error) {
+      window.location.replace("checkout.html");
+      return;
+    }
+
+    const state = {
+      method: params.get("mode") || order.payment?.type || "app",
+      upiId: order.payment?.upiId || "joelvini2007@okicici"
+    };
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      window.clearTimeout(showToast.timer);
+      showToast.timer = window.setTimeout(() => toast.classList.remove("show"), 2400);
+    }
+
+    function buildUPILink() {
+      const upiUrl = new URLSearchParams({
+        pa: state.upiId,
+        pn: "SKULL Streetwear",
+        am: String(order.total),
+        cu: "INR",
+        tn: `SKULL order ${order.id}`
+      });
+      return `upi://pay?${upiUrl.toString()}`;
+    }
+
+    function buildQRUrl() {
+      return `https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=${encodeURIComponent(buildUPILink())}`;
+    }
+
+    function renderSteps() {
+      const steps = state.method === "qr"
+        ? [
+            { title: "Open any UPI app", copy: "PhonePe, Google Pay, Paytm, BHIM, or your bank app will work." },
+            { title: "Scan the QR code", copy: `The amount is already set to ${SKULLStore.formatCurrency(order.total)}.` },
+            { title: "Confirm here after payment", copy: "Tap the payment confirmation button once your transfer succeeds." }
+          ]
+        : [
+            { title: "Open your UPI app", copy: "Use the button below to trigger the UPI payment deep link." },
+            { title: "Approve the payment", copy: `Send exactly ${SKULLStore.formatCurrency(order.total)} to ${state.upiId}.` },
+            { title: "Return here and confirm", copy: "After the transfer, confirm it so we can complete the order." }
+          ];
+
+      document.getElementById("stepsList").innerHTML = steps.map((step, index) => `
+        <div class="step">
+          <div class="step-index">${index + 1}</div>
+          <div>
+            <strong>${SKULLStore.escapeHtml(step.title)}</strong>
+            <p>${SKULLStore.escapeHtml(step.copy)}</p>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function render() {
+      const shippingCost = typeof order.shippingCost === "number"
+        ? order.shippingCost
+        : (typeof order.shipping === "number" ? order.shipping : 0);
+      document.querySelectorAll("[data-method]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.method === state.method);
+      });
+      document.getElementById("upiIdValue").textContent = state.upiId;
+      document.getElementById("orderNumber").textContent = `#SKULL-${String(order.id).slice(-6).padStart(6, "0")}`;
+      document.getElementById("itemCount").textContent = String(order.items.reduce((sum, item) => sum + Number(item.quantity || 1), 0));
+      document.getElementById("subtotalValue").textContent = SKULLStore.formatCurrency(order.subtotal);
+      document.getElementById("shippingValue").textContent = shippingCost === 0 ? "FREE" : SKULLStore.formatCurrency(shippingCost);
+      document.getElementById("taxValue").textContent = SKULLStore.formatCurrency(order.tax);
+      document.getElementById("totalValue").textContent = SKULLStore.formatCurrency(order.total);
+      document.getElementById("sideTitle").textContent = state.method === "qr" ? "QR Payment" : "UPI App Payment";
+      document.getElementById("openUpiBtn").textContent = state.method === "qr" ? "COPY UPI LINK" : "OPEN UPI APP";
+      document.getElementById("qrImage").src = buildQRUrl();
+      renderSteps();
+    }
+
+    function setMethod(method) {
+      state.method = method;
+      render();
+    }
+
+    function openUpiAction() {
+      const upiLink = buildUPILink();
+      if (state.method === "qr") {
+        navigator.clipboard?.writeText(upiLink)
+          .then(() => showToast("UPI link copied."))
+          .catch(() => showToast("Scan the QR code with your UPI app."));
+        return;
+      }
+      window.location.href = upiLink;
+    }
+
+    async function confirmPayment() {
+      const transactionId = `TXN-${Date.now()}`;
+
+      try {
+        order = await SKULLStore.confirmPayment(order.id, transactionId);
+        SKULLStore.clearCart();
+        showToast("Payment confirmed.");
+        setTimeout(() => {
+          window.location.href = `order-confirmation.html?orderId=${order.id}`;
+        }, 700);
+      } catch (error) {
+        showToast(error.message || "Unable to confirm payment.");
+      }
+    }
+
+    document.querySelectorAll("[data-method]").forEach((button) => {
+      button.addEventListener("click", () => setMethod(button.dataset.method));
+    });
+
+    document.getElementById("openUpiBtn").addEventListener("click", openUpiAction);
+    document.getElementById("confirmBtn").addEventListener("click", confirmPayment);
+    document.getElementById("backLink").href = `checkout.html`;
+
+      render();
+    })();
+  </script>
+</body>
+</html>

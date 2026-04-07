@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - SKULL Streetwear</title>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Press+Start+2P&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --cream:#F7F3EC; --parchment:#EEE8D5; --off-white:#FAF8F4;
+            --grass:#5D9E3F; --grass-dark:#3E7228; --grass-light:#7BBF55;
+            --dirt:#8B6340; --stone:#A8A8A8;
+            --gold:#E8B400; --gold-light:#FFD700;
+            --ink:#16120C; --ink-mid:#3A3020; --muted:#8A7D68;
+            --sky-top:#B8DCFF; --sky-bot:#E8F4FF;
+            --red:#D32F2F; --red-dark:#B71C1C;
+        }
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+        html{scroll-behavior:smooth;}
+        body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;cursor:none;}
+
+        /* ═══ CUSTOM CURSOR ═══ */
+        .cursor{position:fixed;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);}
+        .cursor-inner{width:14px;height:14px;background:var(--gold-light);border:2px solid var(--ink);transition:transform .1s,background .2s;}
+        .cursor-outer{position:fixed;pointer-events:none;z-index:99998;width:36px;height:36px;border:2px solid var(--grass);transform:translate(-50%,-50%);transition:left .08s,top .08s;}
+        .px-trail{position:fixed;pointer-events:none;z-index:99990;width:8px;height:8px;background:var(--gold-light);border:1px solid var(--ink);transform:translate(-50%,-50%);opacity:0;}
+
+        /* NAVBAR */
+        .navbar{position:sticky;top:0;z-index:900;height:72px;background:var(--ink);border-bottom:3px solid var(--grass);display:flex;align-items:center;justify-content:space-between;padding:0 52px;box-shadow:0 3px 0 var(--stone);}
+        .nav-left{display:flex;align-items:center;gap:44px;}
+        .nav-logo img{height:50px;filter:brightness(0) invert(1);transition:transform .2s;}
+        .nav-logo img:hover{transform:scale(1.06) rotate(-2deg);}
+        .nav-right{display:flex;align-items:center;gap:22px;}
+        .nav-right i{font-size:18px;cursor:pointer;color:white;transition:color .2s,transform .2s;}
+        .nav-right i:hover{color:var(--grass);transform:scale(1.15);}
+
+        /* DASHBOARD CONTAINER */
+        .dashboard-container{display:flex;min-height:calc(100vh - 72px);}
+
+        /* SIDEBAR */
+        .sidebar{width:280px;background:var(--ink-mid);padding:32px 20px;border-right:3px solid var(--grass);}
+        .sidebar-header{margin-bottom:40px;}
+        .sidebar-title{font-family:'Press Start 2P',cursive;font-size:10px;color:var(--gold);margin-bottom:8px;}
+        .sidebar-subtitle{font-size:14px;color:var(--muted);}
+        
+        .sidebar-nav{display:flex;flex-direction:column;gap:8px;}
+        .nav-item{padding:12px 16px;background:transparent;color:var(--muted);border:none;cursor:pointer;text-decoration:none;font-family:'Press Start 2P',cursive;font-size:8px;transition:all .2s;border-radius:4px;display:flex;align-items:center;gap:12px;}
+        .nav-item:hover{background:var(--grass);color:white;}
+        .nav-item.active{background:var(--grass);color:white;}
+        .nav-item i{font-size:12px;}
+
+        /* MAIN CONTENT */
+        .main-content{flex:1;padding:32px 52px;background:var(--cream);}
+        
+        /* DASHBOARD HEADER */
+        .dashboard-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:40px;}
+        .page-title{font-family:'Anton',sans-serif;font-size:36px;color:var(--ink);letter-spacing:.04em;text-transform:uppercase;}
+        .header-actions{display:flex;gap:16px;}
+        .btn{font-family:'Press Start 2P',cursive;font-size:8px;padding:12px 20px;border:2px solid var(--ink);background:white;color:var(--ink);cursor:pointer;text-decoration:none;transition:all .2s;border-radius:4px;}
+        .btn:hover{background:var(--grass);color:white;transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--ink);}
+        .btn-primary{background:var(--grass);color:white;}
+        .btn-primary:hover{background:var(--grass-dark);}
+        .btn-danger{background:var(--red);color:white;border-color:var(--red);}
+        .btn-danger:hover{background:var(--red-dark);}
+
+        /* STATS CARDS */
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:24px;margin-bottom:40px;}
+        .stat-card{background:var(--parchment);border:3px solid var(--ink);border-radius:8px;padding:24px;box-shadow:4px 4px 0 var(--stone);transition:transform .2s;}
+        .stat-card:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--stone);}
+        .stat-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+        .stat-icon{font-size:24px;color:var(--grass);}
+        .stat-value{font-family:'Anton',sans-serif;font-size:32px;color:var(--ink);margin-bottom:8px;letter-spacing:.04em;}
+        .stat-label{font-size:14px;color:var(--muted);}
+        .stat-change{font-size:12px;font-weight:700;padding:4px 8px;border-radius:4px;}
+        .stat-change.positive{background:var(--grass);color:white;}
+        .stat-change.negative{background:var(--red);color:white;}
+
+        /* TABLES */
+        .table-container{background:var(--parchment);border:3px solid var(--ink);border-radius:8px;overflow:hidden;box-shadow:4px 4px 0 var(--stone);}
+        .table-header{padding:20px 24px;border-bottom:2px solid var(--stone);display:flex;justify-content:space-between;align-items-center;}
+        .table-title{font-family:'Anton',sans-serif;font-size:20px;color:var(--ink);letter-spacing:.04em;text-transform:uppercase;}
+        .table-actions{display:flex;gap:12px;}
+        .search-box{position:relative;}
+        .search-box input{padding:8px 12px;border:2px solid var(--ink);border-radius:4px;font-family:'Nunito',sans-serif;font-size:12px;background:white;}
+        .search-box i{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--muted);}
+        
+        .table{width:100%;border-collapse:collapse;}
+        .table th{background:var(--ink-mid);color:white;font-family:'Press Start 2P',cursive;font-size:8px;padding:16px;text-align:left;border-bottom:2px solid var(--stone);}
+        .table td{padding:16px;border-bottom:1px solid var(--stone);}
+        .table tr:hover{background:rgba(93,158,63,0.1);}
+        
+        .status-badge{font-family:'Press Start 2P',cursive;font-size:7px;padding:4px 8px;border-radius:4px;}
+        .status-processing{background:var(--gold);color:var(--ink);}
+        .status-shipped{background:var(--sky-top);color:var(--ink);}
+        .status-delivered{background:var(--grass);color:white;}
+        .status-cancelled{background:var(--red);color:white;}
+        .status-pending{background:var(--stone);color:white;}
+        
+        .table-actions-cell{display:flex;gap:8px;}
+        .btn-small{font-family:'Press Start 2P',cursive;font-size:7px;padding:6px 10px;border:2px solid var(--ink);background:white;color:var(--ink);cursor:pointer;text-decoration:none;transition:all .2s;border-radius:4px;}
+        .btn-small:hover{background:var(--grass);color:white;transform:translate(-1px,-1px);box-shadow:2px 2px 0 var(--ink);}
+        .btn-small.edit{border-color:var(--grass);color:var(--grass);}
+        .btn-small.edit:hover{background:var(--grass);color:white;}
+        .btn-small.delete{border-color:var(--red);color:var(--red);}
+        .btn-small.delete:hover{background:var(--red);color:white;}
+
+        /* PAGINATION */
+        .pagination{display:flex;justify-content:center;align-items:center;gap:8px;padding:20px;}
+        .page-btn{font-family:'Press Start 2P',cursive;font-size:7px;padding:8px 12px;border:2px solid var(--ink);background:white;color:var(--ink);cursor:pointer;text-decoration:none;transition:all .2s;border-radius:4px;}
+        .page-btn:hover{background:var(--grass);color:white;}
+        .page-btn.active{background:var(--grass);color:white;}
+        .page-btn:disabled{opacity:0.5;cursor:not-allowed;}
+
+        /* MODALS */
+        .modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:10000;}
+        .modal-content{background:var(--cream);border:4px solid var(--ink);border-radius:8px;padding:32px;max-width:500px;width:90%;max-height:90vh;overflow-y:auto;box-shadow:8px 8px 0 var(--stone);}
+        .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;}
+        .modal-title{font-family:'Anton',sans-serif;font-size:24px;color:var(--ink);letter-spacing:.04em;text-transform:uppercase;}
+        .modal-close{background:var(--ink);color:white;border:none;width:32px;height:32px;cursor:pointer;font-family:'Press Start 2P',cursive;font-size:10px;border-radius:4px;}
+        .modal-close:hover{background:var(--red);}
+        .form-group{margin-bottom:20px;}
+        .form-group label{display:block;font-family:'Press Start 2P',cursive;font-size:8px;color:var(--ink);margin-bottom:8px;}
+        .form-group input,.form-group select,.form-group textarea{width:100%;padding:12px;border:2px solid var(--ink);border-radius:4px;font-family:'Nunito',sans-serif;font-size:14px;background:white;}
+        .form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--grass);}
+        .form-group textarea{resize:vertical;min-height:100px;}
+        .modal-actions{display:flex;gap:12px;justify-content:flex-end;margin-top:24px;}
+
+        /* TOAST */
+        .toast{position:fixed;bottom:32px;right:32px;background:var(--grass);color:white;font-family:'Press Start 2P',cursive;font-size:9px;padding:14px 24px;border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);opacity:0;transition:all .3s;z-index:9999;}
+        .toast.show{opacity:1;transform:translateX(0);}
+        .toast.error{background:var(--red);}
+        .toast.success{background:var(--grass);}
+
+        /* RESPONSIVE */
+        @media(max-width:1024px){
+            .sidebar{width:240px;}
+            .main-content{padding:20px;}
+            .stats-grid{grid-template-columns:repeat(auto-fit,minmax(200px,1fr));}
+        }
+        @media(max-width:768px){
+            .dashboard-container{flex-direction:column;}
+            .sidebar{width:100%;padding:20px;}
+            .sidebar-nav{flex-direction:row;overflow-x:auto;}
+            .main-content{padding:16px;}
+            .dashboard-header{flex-direction:column;gap:20px;text-align:center;}
+            .stats-grid{grid-template-columns:1fr;}
+            .table-container{overflow-x:auto;}
+        }
+    </style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"><div class="cursor-inner"></div></div>
+<div class="cursor-outer" id="cursorOuter"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-left">
+    <a class="nav-logo" href="index.html">
+      <img src="assets/skull-text.png" alt="SKULL Streetwear">
+    </a>
+  </div>
+  <div class="nav-right">
+    <i class="fa fa-bell" title="Notifications"></i>
+    <i class="fa fa-cog" title="Settings"></i>
+    <i class="fa fa-sign-out-alt" title="Logout" onclick="logout()"></i>
+  </div>
+</nav>
+
+<!-- DASHBOARD CONTAINER -->
+<div class="dashboard-container">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">ADMIN PANEL</div>
+      <div class="sidebar-subtitle">SKULL Streetwear</div>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" onclick="showSection('dashboard')">
+        <i class="fa fa-tachometer-alt"></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="#" class="nav-item" onclick="showSection('orders')">
+        <i class="fa fa-shopping-cart"></i>
+        <span>Orders</span>
+      </a>
+      <a href="#" class="nav-item" onclick="showSection('products')">
+        <i class="fa fa-box"></i>
+        <span>Products</span>
+      </a>
+      <a href="#" class="nav-item" onclick="showSection('users')">
+        <i class="fa fa-users"></i>
+        <span>Users</span>
+      </a>
+      <a href="#" class="nav-item" onclick="showSection('analytics')">
+        <i class="fa fa-chart-line"></i>
+        <span>Analytics</span>
+      </a>
+      <a href="#" class="nav-item" onclick="showSection('settings')">
+        <i class="fa fa-cog"></i>
+        <span>Settings</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    <!-- DASHBOARD SECTION -->
+    <section id="dashboard-section" class="content-section">
+      <div class="dashboard-header">
+        <h1 class="page-title">Dashboard Overview</h1>
+        <div class="header-actions">
+          <button class="btn btn-primary" onclick="refreshData()">
+            <i class="fa fa-sync"></i> Refresh
+          </button>
+        </div>
+      </div>
+
+      <!-- STATS CARDS -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-icon">📦</div>
+            <div class="stat-change positive">+12%</div>
+          </div>
+          <div class="stat-value" id="totalOrders">0</div>
+          <div class="stat-label">Total Orders</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-icon">💰</div>
+            <div class="stat-change positive">+8%</div>
+          </div>
+          <div class="stat-value" id="totalRevenue">₹0</div>
+          <div class="stat-label">Total Revenue</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-icon">👥</div>
+            <div class="stat-change positive">+15%</div>
+          </div>
+          <div class="stat-value" id="totalUsers">0</div>
+          <div class="stat-label">Total Users</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-icon">📦</div>
+            <div class="stat-change negative">-3%</div>
+          </div>
+          <div class="stat-value" id="pendingOrders">0</div>
+          <div class="stat-label">Pending Orders</div>
+        </div>
+      </div>
+
+      <!-- RECENT ORDERS -->
+      <div class="table-container">
+        <div class="table-header">
+          <h2 class="table-title">Recent Orders</h2>
+          <div class="table-actions">
+            <div class="search-box">
+              <input type="text" placeholder="Search orders..." id="orderSearch" onkeyup="searchOrders()">
+              <i class="fa fa-search"></i>
+            </div>
+          </div>
+        </div>
+        
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Date</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="recentOrdersTable">
+            <!-- Orders will be populated by JavaScript -->
+          </tbody>
+        </table>
+        
+        <div class="pagination" id="ordersPagination">
+          <!-- Pagination will be populated by JavaScript -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ORDERS SECTION -->
+    <section id="orders-section" class="content-section" style="display:none;">
+      <div class="dashboard-header">
+        <h1 class="page-title">Order Management</h1>
+        <div class="header-actions">
+          <button class="btn btn-primary" onclick="exportOrders()">
+            <i class="fa fa-download"></i> Export
+          </button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <div class="table-header">
+          <h2 class="table-title">All Orders</h2>
+          <div class="table-actions">
+            <div class="search-box">
+              <input type="text" placeholder="Search orders..." onkeyup="searchAllOrders()">
+              <i class="fa fa-search"></i>
+            </div>
+          </div>
+        </div>
+        
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Date</th>
+              <th>Items</th>
+              <th>Total</th>
+              <th>Payment</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="allOrdersTable">
+            <!-- Orders will be populated by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PRODUCTS SECTION -->
+    <section id="products-section" class="content-section" style="display:none;">
+      <div class="dashboard-header">
+        <h1 class="page-title">Product Management</h1>
+        <div class="header-actions">
+          <button class="btn btn-primary" onclick="showAddProductModal()">
+            <i class="fa fa-plus"></i> Add Product
+          </button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <div class="table-header">
+          <h2 class="table-title">All Products</h2>
+          <div class="table-actions">
+            <div class="search-box">
+              <input type="text" placeholder="Search products..." onkeyup="searchProducts()">
+              <i class="fa fa-search"></i>
+            </div>
+          </div>
+        </div>
+        
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="productsTable">
+            <!-- Products will be populated by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- USERS SECTION -->
+    <section id="users-section" class="content-section" style="display:none;">
+      <div class="dashboard-header">
+        <h1 class="page-title">User Management</h1>
+        <div class="header-actions">
+          <button class="btn btn-primary" onclick="exportUsers()">
+            <i class="fa fa-download"></i> Export
+          </button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <div class="table-header">
+          <h2 class="table-title">All Users</h2>
+          <div class="table-actions">
+            <div class="search-box">
+              <input type="text" placeholder="Search users..." onkeyup="searchUsers()">
+              <i class="fa fa-search"></i>
+            </div>
+          </div>
+        </div>
+        
+        <table class="table">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Orders</th>
+              <th>Joined</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="usersTable">
+            <!-- Users will be populated by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ANALYTICS SECTION -->
+    <section id="analytics-section" class="content-section" style="display:none;">
+      <div class="dashboard-header">
+        <h1 class="page-title">Analytics & Reports</h1>
+        <div class="header-actions">
+          <button class="btn btn-primary" onclick="generateReport()">
+            <i class="fa fa-file-pdf"></i> Generate Report
+          </button>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-icon">📈</div>
+            <div class="stat-change positive">+25%</div>
+          </div>
+          <div class="stat-value">₹125,430</div>
+          <div class="stat-label">This Month Revenue</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-icon">🛒</div>
+            <div class="stat-change positive">+18%</div>
+          </div>
+          <div class="stat-value">234</div>
+          <div class="stat-label">This Month Orders</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-icon">👤</div>
+            <div class="stat-change positive">+32%</div>
+          </div>
+          <div class="stat-value">89</div>
+          <div class="stat-label">New Customers</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-icon">🔄</div>
+            <div class="stat-change positive">+5%</div>
+          </div>
+          <div class="stat-value">42%</div>
+          <div class="stat-label">Return Rate</div>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <div class="table-header">
+          <h2 class="table-title">Top Products</h2>
+        </div>
+        
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Sales</th>
+              <th>Revenue</th>
+              <th>Rating</th>
+            </tr>
+          </thead>
+          <tbody id="topProductsTable">
+            <!-- Top products will be populated by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SETTINGS SECTION -->
+    <section id="settings-section" class="content-section" style="display:none;">
+      <div class="dashboard-header">
+        <h1 class="page-title">Settings</h1>
+      </div>
+
+      <div class="table-container">
+        <div class="table-header">
+          <h2 class="table-title">General Settings</h2>
+        </div>
+        
+        <div style="padding:24px;">
+          <div class="form-group">
+            <label>Store Name</label>
+            <input type="text" value="SKULL Streetwear">
+          </div>
+          <div class="form-group">
+            <label>Store Email</label>
+            <input type="email" value="support@skullstreetwear.com">
+          </div>
+          <div class="form-group">
+            <label>Store Phone</label>
+            <input type="tel" value="+91 9876543210">
+          </div>
+          <div class="form-group">
+            <label>Currency</label>
+            <select>
+              <option value="INR" selected>Indian Rupee (₹)</option>
+              <option value="USD">US Dollar ($)</option>
+              <option value="EUR">Euro (€)</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="saveSettings()">
+            <i class="fa fa-save"></i> Save Settings
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- MODALS -->
+<div id="productModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title" id="productModalTitle">Add Product</h2>
+      <button class="modal-close" onclick="closeProductModal()">✕</button>
+    </div>
+    
+    <form id="productForm">
+      <div class="form-group">
+        <label>Product Name</label>
+        <input type="text" id="productName" required>
+      </div>
+      <div class="form-group">
+        <label>Category</label>
+        <select id="productCategory" required>
+          <option value="">Select Category</option>
+          <option value="tops">Tops</option>
+          <option value="bottoms">Bottoms</option>
+          <option value="accessories">Accessories</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Price</label>
+        <input type="number" id="productPrice" min="0" step="0.01" required>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea id="productDescription" required></textarea>
+      </div>
+      <div class="form-group">
+        <label>Stock</label>
+        <input type="number" id="productStock" min="0" required>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn" onclick="closeProductModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Product</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script src="store-utils.js"></script>
+<script>
+  // ═════════════════════════
+  // STATE MANAGEMENT
+  // ═════════════════════════
+  let currentSection = 'dashboard';
+  let allOrders = [];
+  let allUsers = [];
+  let allProducts = [];
+  let summary = { usersCount: 0, ordersCount: 0, pendingOrders: 0, revenue: 0 };
+
+  // ═════════════════════════
+  // CURSOR
+  // ═════════════════════════
+  const cur = document.getElementById('cursor');
+  const curO = document.getElementById('cursorOuter');
+  let mx = 0, my = 0, ox = 0, oy = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cur.style.left = mx + 'px';
+    cur.style.top = my + 'px';
+  });
+  
+  const trails = [];
+  for(let i = 0; i < 6; i++){
+    const d = document.createElement('div');
+    d.className = 'px-trail';
+    document.body.appendChild(d);
+    trails.push({el: d, x: 0, y: 0});
+  }
+  
+  function animCursor(){
+    ox += (mx - ox) * .15;
+    oy += (my - oy) * .15;
+    curO.style.left = ox + 'px';
+    curO.style.top = oy + 'px';
+    trails.forEach((t, i) => {
+      const prev = i === 0 ? {x: mx, y: my} : trails[i-1];
+      t.x += (prev.x - t.x) * (0.3 - i * .03);
+      t.y += (prev.y - t.y) * (0.3 - i * .03);
+      t.el.style.left = t.x + 'px';
+      t.el.style.top = t.y + 'px';
+      t.el.style.opacity = (0.6 - i * .1).toString();
+      t.el.style.transform = `translate(-50%,-50%) scale(${1 - i * .12})`;
+    });
+    requestAnimationFrame(animCursor);
+  }
+  animCursor();
+
+  // ═════════════════════════
+  // INITIALIZATION
+  // ═════════════════════════
+  async function init(){
+    const sessionUser = SKULLStore.getCurrentUser();
+    if (!sessionUser || !SKULLStore.getAuthToken()) {
+      window.location.href = 'login.html';
+      return;
+    }
+    if (sessionUser.role !== 'admin') {
+      showToast('Admin access is required.', 'error');
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 900);
+      return;
+    }
+
+    setupEventListeners();
+    await refreshData();
+  }
+
+  // ═════════════════════════
+  // DATA LOADING
+  // ═════════════════════════
+  async function loadDashboardData(){
+    const [nextSummary, nextOrders, nextUsers, nextProducts] = await Promise.all([
+      SKULLStore.getAdminSummary(),
+      SKULLStore.getAdminOrders(),
+      SKULLStore.getAdminUsers(),
+      SKULLStore.fetchProducts()
+    ]);
+
+    summary = nextSummary || summary;
+    allOrders = Array.isArray(nextOrders) ? nextOrders.slice() : [];
+    allUsers = Array.isArray(nextUsers) ? nextUsers.slice() : [];
+    allProducts = Array.isArray(nextProducts) ? nextProducts.map((product) => ({
+      ...product,
+      stock: product.stock || 0,
+      status: 'active'
+    })) : [];
+
+    updateDashboardStats();
+    loadRecentOrders();
+  }
+
+  // ═════════════════════════
+  // DASHBOARD FUNCTIONS
+  // ═════════════════════════
+  function updateDashboardStats(){
+    const totalOrders = summary.ordersCount || allOrders.length;
+    const totalRevenue = summary.revenue || allOrders.reduce((sum, order) => sum + Number(order.total || 0), 0);
+    const totalUsers = summary.usersCount || allUsers.length;
+    const pendingOrders = summary.pendingOrders || allOrders.filter(order => String(order.status || '').toLowerCase().includes('pending')).length;
+    
+    document.getElementById('totalOrders').textContent = totalOrders;
+    document.getElementById('totalRevenue').textContent = `₹${totalRevenue.toLocaleString('en-IN')}`;
+    document.getElementById('totalUsers').textContent = totalUsers;
+    document.getElementById('pendingOrders').textContent = pendingOrders;
+  }
+
+  function loadRecentOrders(){
+    const recentOrders = allOrders.slice(0, 10);
+    const tbody = document.getElementById('recentOrdersTable');
+    
+    tbody.innerHTML = recentOrders.map(order => {
+      const orderNumber = order.orderNumber || `SKULL-${String(order.id).slice(-6).padStart(6, '0')}`;
+      const orderDate = new Date(order.date || order.createdAt).toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric',
+        year: 'numeric'
+      });
+      
+      return `
+        <tr>
+          <td>${orderNumber}</td>
+          <td>${order.shippingAddress?.fullName || 'Customer'}</td>
+          <td>${orderDate}</td>
+          <td>₹${order.total.toLocaleString('en-IN')}</td>
+          <td><span class="status-badge status-${String(order.status || 'processing').toLowerCase().replace('_','-')}">${order.status || 'processing'}</span></td>
+          <td>
+            <div class="table-actions-cell">
+              <button class="btn-small edit" onclick="viewOrder('${order.id}')">
+                <i class="fa fa-eye"></i>
+              </button>
+              <button class="btn-small" onclick="updateOrderStatus('${order.id}')">
+                <i class="fa fa-edit"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  // ═════════════════════════
+  // SECTION MANAGEMENT
+  // ═════════════════════════
+  function showSection(sectionName){
+    // Hide all sections
+    document.querySelectorAll('.content-section').forEach(section => {
+      section.style.display = 'none';
+    });
+    
+    // Show selected section
+    document.getElementById(`${sectionName}-section`).style.display = 'block';
+    
+    // Update nav items
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.classList.remove('active');
+    });
+    const trigger = window.event?.target?.closest('.nav-item');
+    if(trigger){
+      trigger.classList.add('active');
+    }
+    
+    currentSection = sectionName;
+    
+    // Load section-specific data
+    if(sectionName === 'orders'){
+      loadAllOrders();
+    } else if(sectionName === 'products'){
+      loadProducts();
+    } else if(sectionName === 'users'){
+      loadUsers();
+    } else if(sectionName === 'analytics'){
+      loadAnalytics();
+    }
+  }
+
+  // ═════════════════════════
+  // ORDER FUNCTIONS
+  // ═════════════════════════
+  function loadAllOrders(){
+    const tbody = document.getElementById('allOrdersTable');
+    
+    tbody.innerHTML = allOrders.map(order => {
+      const orderNumber = order.orderNumber || `SKULL-${String(order.id).slice(-6).padStart(6, '0')}`;
+      const orderDate = new Date(order.date || order.createdAt).toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric',
+        year: 'numeric'
+      });
+      
+      return `
+        <tr>
+          <td>${orderNumber}</td>
+          <td>${order.shippingAddress?.fullName || 'Customer'}</td>
+          <td>${orderDate}</td>
+          <td>${order.items.length} items</td>
+          <td>₹${order.total.toLocaleString('en-IN')}</td>
+          <td>${String(order.payment?.method || 'COD').toUpperCase()}</td>
+          <td><span class="status-badge status-${String(order.status || 'processing').toLowerCase().replace('_','-')}">${order.status || 'processing'}</span></td>
+          <td>
+            <div class="table-actions-cell">
+              <button class="btn-small edit" onclick="viewOrder('${order.id}')">
+                <i class="fa fa-eye"></i>
+              </button>
+              <button class="btn-small" onclick="updateOrderStatus('${order.id}')">
+                <i class="fa fa-edit"></i>
+              </button>
+              <button class="btn-small delete" onclick="deleteOrder('${order.id}')">
+                <i class="fa fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function viewOrder(orderId){
+    window.location.href = `order-confirmation.html?orderId=${orderId}`;
+  }
+
+  async function updateOrderStatus(orderId){
+    const newStatus = prompt('Enter new status (confirmed, processing, packed, shipped, delivered, cancelled):');
+    if(!newStatus) return;
+
+    try {
+      await SKULLStore.updateAdminOrderStatus(orderId, String(newStatus).trim().toLowerCase(), '');
+      showToast('Order status updated successfully!');
+      await refreshData();
+    } catch (error) {
+      showToast(error.message || 'Unable to update order status.', 'error');
+    }
+  }
+
+  async function deleteOrder(orderId){
+    if(!confirm('Mark this order as cancelled?')) return;
+
+    try {
+      await SKULLStore.updateAdminOrderStatus(orderId, 'cancelled', 'Cancelled from admin dashboard.');
+      showToast('Order marked as cancelled.');
+      await refreshData();
+    } catch (error) {
+      showToast(error.message || 'Unable to cancel order.', 'error');
+    }
+  }
+
+  // ═════════════════════════
+  // PRODUCT FUNCTIONS
+  // ═════════════════════════
+  function loadProducts(){
+    const tbody = document.getElementById('productsTable');
+    
+    tbody.innerHTML = allProducts.map(product => `
+      <tr>
+        <td>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:40px;height:40px;background:var(--cream);border:2px solid var(--ink);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:20px;">
+              💀
+            </div>
+            <div>
+              <div style="font-weight:700;">${product.name}</div>
+              <div style="font-size:12px;color:var(--muted);">SKU: ${product.id}</div>
+            </div>
+          </div>
+        </td>
+        <td>${String(product.category || '').toUpperCase()}</td>
+        <td>₹${product.price.toLocaleString('en-IN')}</td>
+        <td>${product.stock}</td>
+        <td><span class="status-badge status-${product.status}">${product.status}</span></td>
+        <td>
+          <div class="table-actions-cell">
+            <button class="btn-small edit" onclick="editProduct('${product.id}')">
+              <i class="fa fa-edit"></i>
+            </button>
+            <button class="btn-small delete" onclick="deleteProduct('${product.id}')">
+              <i class="fa fa-trash"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function showAddProductModal(){
+    showToast('Product editing is not connected yet. Manage catalog in backend/server.js.', 'error');
+  }
+
+  function closeProductModal(){
+    document.getElementById('productModal').style.display = 'none';
+  }
+
+  function editProduct(productId){
+    showToast(`Product ${productId} is read-only right now.`, 'error');
+  }
+
+  function deleteProduct(productId){
+    showToast(`Product ${productId} cannot be deleted from the dashboard yet.`, 'error');
+  }
+
+  // ═════════════════════════
+  // USER FUNCTIONS
+  // ═════════════════════════
+  function loadUsers(){
+    const tbody = document.getElementById('usersTable');
+    
+    tbody.innerHTML = allUsers.map(user => {
+      const userOrders = allOrders.filter(order => order.userId === user.id || order.customerId === user.id);
+      const joinDate = new Date(user.createdAt || Date.now()).toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric',
+        year: 'numeric'
+      });
+      
+      return `
+        <tr>
+          <td>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:40px;height:40px;background:var(--grass);border:2px solid var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;color:white;">
+                ${(user.name || 'U').charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <div style="font-weight:700;">${user.name}</div>
+                <div style="font-size:12px;color:var(--muted);">ID: ${String(user.id).slice(-6)}</div>
+              </div>
+            </div>
+          </td>
+          <td>${user.email}</td>
+          <td>${user.phone || 'Not provided'}</td>
+          <td>${userOrders.length}</td>
+          <td>${joinDate}</td>
+          <td><span class="status-badge status-active">Active</span></td>
+          <td>
+            <div class="table-actions-cell">
+              <button class="btn-small edit" onclick="viewUserOrders('${user.id}')">
+                <i class="fa fa-eye"></i>
+              </button>
+              <button class="btn-small delete" onclick="deleteUser('${user.id}')">
+                <i class="fa fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function viewUserOrders(userId){
+    // Filter orders by user and show in orders section
+    const userOrders = allOrders.filter(order => order.userId === userId);
+    if(!userOrders.length){
+      showToast('No orders found for this user.');
+      return;
+    }
+    showSection('orders');
+    showToast(`Showing ${userOrders.length} orders for this user.`);
+  }
+
+  function deleteUser(userId){
+    showToast(`User ${userId} cannot be deleted from the dashboard yet.`, 'error');
+  }
+
+  // ═════════════════════════
+  // ANALYTICS FUNCTIONS
+  // ═════════════════════════
+  function loadAnalytics(){
+    // Load top products
+    const tbody = document.getElementById('topProductsTable');
+    
+    // Calculate product sales
+    const productSales = {};
+    allOrders.forEach(order => {
+      order.items.forEach(item => {
+        if(!productSales[item.id]){
+          productSales[item.id] = {
+            name: item.name,
+            sales: 0,
+            revenue: 0
+          };
+        }
+        productSales[item.id].sales += item.quantity || 1;
+        productSales[item.id].revenue += item.price * (item.quantity || 1);
+      });
+    });
+    
+    // Sort by revenue
+    const topProducts = Object.values(productSales)
+      .sort((a, b) => b.revenue - a.revenue)
+      .slice(0, 10);
+    
+    tbody.innerHTML = topProducts.map(product => `
+      <tr>
+        <td>${product.name}</td>
+        <td>${product.sales}</td>
+        <td>₹${product.revenue.toLocaleString('en-IN')}</td>
+        <td>⭐ 4.5</td>
+      </tr>
+    `).join('');
+  }
+
+  // ═════════════════════════
+  // SEARCH FUNCTIONS
+  // ═════════════════════════
+  function searchOrders(){
+    const searchTerm = document.getElementById('orderSearch').value.toLowerCase();
+    const rows = document.querySelectorAll('#recentOrdersTable tr');
+    
+    rows.forEach(row => {
+      const text = row.textContent.toLowerCase();
+      row.style.display = text.includes(searchTerm) ? '' : 'none';
+    });
+  }
+
+  function searchAllOrders(){
+    const searchTerm = event.target.value.toLowerCase();
+    const rows = document.querySelectorAll('#allOrdersTable tr');
+    
+    rows.forEach(row => {
+      const text = row.textContent.toLowerCase();
+      row.style.display = text.includes(searchTerm) ? '' : 'none';
+    });
+  }
+
+  function searchProducts(){
+    const searchTerm = event.target.value.toLowerCase();
+    const rows = document.querySelectorAll('#productsTable tr');
+    
+    rows.forEach(row => {
+      const text = row.textContent.toLowerCase();
+      row.style.display = text.includes(searchTerm) ? '' : 'none';
+    });
+  }
+
+  function searchUsers(){
+    const searchTerm = event.target.value.toLowerCase();
+    const rows = document.querySelectorAll('#usersTable tr');
+    
+    rows.forEach(row => {
+      const text = row.textContent.toLowerCase();
+      row.style.display = text.includes(searchTerm) ? '' : 'none';
+    });
+  }
+
+  // ═════════════════════════
+  // UTILITY FUNCTIONS
+  // ═════════════════════════
+  async function refreshData(){
+    showToast('Refreshing data...');
+    try {
+      await loadDashboardData();
+      if(currentSection === 'orders'){
+        loadAllOrders();
+      } else if(currentSection === 'products'){
+        loadProducts();
+      } else if(currentSection === 'users'){
+        loadUsers();
+      } else if(currentSection === 'analytics'){
+        loadAnalytics();
+      }
+    } catch (error) {
+      showToast(error.message || 'Unable to refresh dashboard.', 'error');
+      if(String(error.message || '').toLowerCase().includes('admin')){
+        SKULLStore.logout();
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 900);
+      }
+    }
+  }
+
+  function exportOrders(){
+    showToast('Exporting orders...');
+    // Implementation would export to CSV/Excel
+  }
+
+  function exportUsers(){
+    showToast('Exporting users...');
+    // Implementation would export to CSV/Excel
+  }
+
+  function generateReport(){
+    showToast('Generating report...');
+    // Implementation would generate PDF report
+  }
+
+  function saveSettings(){
+    showToast('Settings saved successfully!');
+  }
+
+  function logout(){
+    if(confirm('Are you sure you want to logout?')){
+      SKULLStore.logout();
+      window.location.href = 'index.html';
+    }
+  }
+
+  function showToast(message, type = 'success'){
+    const toast = document.getElementById('toast');
+    toast.textContent = String(message);
+    toast.className = `toast show ${type}`;
+    
+    if(type === 'error'){
+      toast.style.background = 'var(--red)';
+    } else {
+      toast.style.background = 'var(--grass)';
+    }
+    
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3000);
+  }
+
+  // ═════════════════════════
+  // EVENT LISTENERS
+  // ═════════════════════════
+  function setupEventListeners(){
+    // Product form
+    document.getElementById('productForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      showToast('Product editing is not connected yet.', 'error');
+      closeProductModal();
+    });
+  }
+
+  // Initialize the dashboard
+  init();
+</script>
+</body>
+</html>

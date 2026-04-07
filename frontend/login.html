@@ -156,6 +156,8 @@
     </div>
 </div>
 
+<script src="config.js"></script>
+<script src="api-utils.js"></script>
 <script src="store-utils.js"></script>
 <script>
 const form = document.getElementById("login-form");
@@ -170,15 +172,17 @@ function showMessage(type, text) {
 }
 
 function getApiBase() {
-    if (window.SKULLStore && typeof window.SKULLStore.getApiBase === "function") {
-        return window.SKULLStore.getApiBase();
+    // Use new API configuration
+    if (window.API_CONFIG && typeof window.API_CONFIG.getApiBase === "function") {
+        return window.API_CONFIG.getApiBase();
     }
-    if (window.location.protocol === "file:") {
+    
+    // Fallback for development
+    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
         return "http://localhost:5000";
     }
-    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-        return `${window.location.protocol}//${window.location.hostname}:5000`;
-    }
+    
+    // Production fallback
     return window.location.origin.replace(/\/$/, "");
 }
 
@@ -282,6 +286,19 @@ async function loginWithLegacyApi(email, password) {
 }
 
 async function login(email, password) {
+    try {
+        // Use new API utilities first
+        if (window.api && typeof window.api.login === "function") {
+            const result = await window.api.login(email, password);
+            const sessionUser = normalizeSessionUser(result?.user, email);
+            persistLegacyUser(sessionUser);
+            return sessionUser;
+        }
+    } catch (error) {
+        console.warn("New API login failed, trying legacy route:", error);
+    }
+
+    // Fallback to legacy method
     if (window.SKULLStore && typeof window.SKULLStore.login === "function") {
         try {
             const result = await window.SKULLStore.login(email, password);

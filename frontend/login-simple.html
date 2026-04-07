@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - SKULL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Bebas+Neue&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --cream: #F7F3EC;
+            --parchment: #EEE8D5;
+            --grass: #5D9E3F;
+            --grass-d: #3E7228;
+            --stone: #A8A8A8;
+            --gold: #E8B400;
+            --gold-l: #FFD700;
+            --ink: #16120C;
+            --ink-m: #3A3020;
+            --muted: #8A7D68;
+            --red: #D32F2F;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border: 3px solid var(--ink);
+            border-radius: 8px;
+            box-shadow: 8px 8px 0 var(--ink);
+            padding: 40px;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 48px;
+            color: var(--ink);
+            margin: 0;
+        }
+
+        .logo .skull {
+            font-size: 24px;
+            color: var(--grass);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 8px;
+            color: var(--ink);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--stone);
+            border-radius: 4px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 16px;
+            background: var(--cream);
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--grass);
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 15px;
+            background: var(--ink);
+            color: white;
+            border: 3px solid var(--ink);
+            border-radius: 4px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .login-button:hover {
+            background: var(--grass);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 0 var(--grass-d);
+        }
+
+        .login-button:disabled {
+            background: var(--stone);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 8px;
+        }
+
+        .register-link a {
+            color: var(--grass);
+            text-decoration: none;
+        }
+
+        .register-link a:hover {
+            color: var(--grass-d);
+            text-decoration: underline;
+        }
+
+        .message {
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 8px;
+            text-align: center;
+        }
+
+        .message.success {
+            background: rgba(93, 158, 63, 0.1);
+            color: var(--grass);
+            border: 2px solid var(--grass);
+        }
+
+        .message.error {
+            background: rgba(211, 47, 47, 0.1);
+            color: var(--red);
+            border: 2px solid var(--red);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <h1>SKULL <span class="skull"> skull </span></h1>
+        </div>
+
+        <div id="message-container"></div>
+
+        <form id="login-form">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required placeholder="Enter your email">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required placeholder="Enter your password">
+            </div>
+
+            <button type="submit" id="login-button" class="login-button">
+                <i class="fa fa-sign-in-alt"></i> Login
+            </button>
+        </form>
+
+        <div class="register-link">
+            Don't have an account?
+            <a href="index.html">Register</a>
+        </div>
+    </div>
+
+    <script src="simple-api.js"></script>
+    <script>
+        const form = document.getElementById('login-form');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const loginButton = document.getElementById('login-button');
+        const messageContainer = document.getElementById('message-container');
+
+        // Show message function
+        function showMessage(type, text) {
+            messageContainer.innerHTML = `<div class="message ${type}">${text}</div>`;
+        }
+
+        // Handle login form submission
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            if (!email || !password) {
+                showMessage('error', 'Please enter email and password');
+                return;
+            }
+
+            // Disable button and show loading
+            loginButton.disabled = true;
+            loginButton.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Logging in...';
+            showMessage('', '');
+
+            try {
+                // Use simple API login function
+                const result = await login(email, password);
+                
+                showMessage('success', 'Login successful! Redirecting...');
+                
+                // Redirect to profile page after successful login
+                setTimeout(() => {
+                    window.location.href = 'profile.html';
+                }, 1500);
+
+            } catch (error) {
+                showMessage('error', error.message || 'Login failed. Please try again.');
+                console.error('Login error:', error);
+            } finally {
+                // Re-enable button
+                loginButton.disabled = false;
+                loginButton.innerHTML = '<i class="fa fa-sign-in-alt"></i> Login';
+            }
+        }
+
+        // Add event listener to form
+        form.addEventListener('submit', handleLogin);
+
+        // Check if user is already logged in
+        if (isAuthenticated()) {
+            window.location.href = 'profile.html';
+        }
+    </script>
+</body>
+</html>

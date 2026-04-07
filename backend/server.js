@@ -1,3 +1,6 @@
+// Load environment variables from .env file
+require("dotenv").config();
+
 const express = require("express");
 const { MongoClient, ObjectId } = require("mongodb");
 const cors = require("cors");
@@ -16,17 +19,20 @@ const JWT_SECRET = process.env.JWT_SECRET;
 // Validate required environment variables
 if (!MONGODB_URI) {
   console.error("❌ ERROR: MONGODB_URI environment variable is required");
-  console.error("Please set MONGODB_URI in your environment variables");
+  console.error("💡 Local: Set MONGODB_URI in .env file");
+  console.error("💡 Production: Set MONGODB_URI in deployment environment");
   process.exit(1);
 }
 
 if (!JWT_SECRET) {
   console.error("❌ ERROR: JWT_SECRET environment variable is required");
-  console.error("Please set JWT_SECRET in your environment variables");
+  console.error("💡 Local: Set JWT_SECRET in .env file");
+  console.error("💡 Production: Set JWT_SECRET in deployment environment");
   process.exit(1);
 }
 
 console.log("✅ Environment variables validated successfully");
+console.log(`🔧 Using PORT: ${process.env.PORT || 5000} (default: 5000)`);
 
 app.use(cors());
 app.use(express.json());
@@ -638,17 +644,24 @@ function startServer() {
     console.log(`📍 Port: ${PORT}`);
     console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}`);
     console.log(`🔗 Local: http://localhost:${PORT}`);
+    console.log(`📊 MongoDB: ${MONGODB_URI ? 'Connected' : 'Not configured'}`);
   });
 
   server.on("error", (error) => {
     if (error.code === "EADDRINUSE") {
-      console.error(`❌ Port ${PORT} is already in use.`);
-      console.error(`💡 Solution: Stop the other server using port ${PORT}, or start with a different port`);
-      console.error(`📝 Example: PORT=5001 node server.js`);
+      console.error(`\n❌ Port ${PORT} is already in use.`);
+      console.error(`💡 Solutions:`);
+      console.error(`   1. Stop the other server using port ${PORT}`);
+      console.error(`   2. Start with a different port:`);
+      console.error(`      PORT=5001 node server.js`);
+      console.error(`      PORT=8000 node server.js`);
+      console.error(`   3. Check for other Node.js processes: tasklist /fi "node.exe"`);
+      console.error(`   4. Kill process: taskkill /F /IM node.exe`);
       return;
     }
 
     console.error("❌ Server startup failed:", error.message);
+    console.error("💡 Check if port is available or if you have sufficient permissions");
   });
 }
 

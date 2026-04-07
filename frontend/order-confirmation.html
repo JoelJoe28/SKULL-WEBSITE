@@ -393,6 +393,8 @@
     </div>
   </main>
 
+  <script src="config.js"></script>
+  <script src="api-utils.js"></script>
   <script src="store-utils.js"></script>
   <script>
     (async function () {
@@ -407,8 +409,15 @@
 
     let order;
     try {
-      order = await SKULLStore.getOrder(orderId);
+      // Try new API utilities first
+      if (window.api && typeof window.api.getOrder === "function") {
+        order = await window.api.getOrder(orderId);
+      } else {
+        // Fallback to legacy method
+        order = await SKULLStore.getOrder(orderId);
+      }
     } catch (error) {
+      console.error("Failed to fetch order:", error);
       window.location.replace("profile.html");
       return;
     }

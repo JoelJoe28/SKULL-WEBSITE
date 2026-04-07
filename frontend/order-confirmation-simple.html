@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation - SKULL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Bebas+Neue&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --cream: #F7F3EC;
+            --parchment: #EEE8D5;
+            --grass: #5D9E3F;
+            --grass-d: #3E7228;
+            --stone: #A8A8A8;
+            --gold: #E8B400;
+            --gold-l: #FFD700;
+            --ink: #16120C;
+            --ink-m: #3A3020;
+            --muted: #8A7D68;
+            --red: #D32F2F;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border: 3px solid var(--ink);
+            border-radius: 8px;
+            box-shadow: 8px 8px 0 var(--ink);
+            overflow: hidden;
+        }
+
+        .header {
+            background: var(--grass);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 48px;
+            margin: 0;
+        }
+
+        .header .skull {
+            font-size: 24px;
+            color: var(--gold-l);
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .order-info {
+            background: var(--parchment);
+            border: 2px solid var(--ink);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .order-info h2 {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 12px;
+            color: var(--ink);
+            margin: 0 0 20px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .order-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--stone);
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 8px;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+
+        .detail-value {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .items-section {
+            margin-bottom: 30px;
+        }
+
+        .items-section h2 {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 12px;
+            color: var(--ink);
+            margin: 0 0 20px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid var(--stone);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            background: var(--cream);
+        }
+
+        .item-image {
+            width: 60px;
+            height: 60px;
+            background: var(--parchment);
+            border: 2px solid var(--ink);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-right: 15px;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-name {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .item-price {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 18px;
+            color: var(--grass);
+        }
+
+        .item-quantity {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 8px;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+
+        .totals {
+            background: var(--ink);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .total-row.grand {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 24px;
+            font-weight: 900;
+            border-top: 2px solid var(--gold);
+            padding-top: 15px;
+            margin-top: 10px;
+        }
+
+        .actions {
+            text-align: center;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 10px;
+            border: 3px solid var(--ink);
+            border-radius: 4px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn.primary {
+            background: var(--grass);
+            color: white;
+        }
+
+        .btn.primary:hover {
+            background: var(--grass-d);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 0 var(--ink);
+        }
+
+        .btn.secondary {
+            background: white;
+            color: var(--ink);
+        }
+
+        .btn.secondary:hover {
+            background: var(--parchment);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 0 var(--ink);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            color: var(--muted);
+        }
+
+        .error {
+            text-align: center;
+            padding: 20px;
+            background: rgba(211, 47, 47, 0.1);
+            border: 2px solid var(--red);
+            border-radius: 8px;
+            color: var(--red);
+            font-family: 'Press Start 2P', cursive;
+            font-size: 8px;
+            margin: 20px 0;
+        }
+
+        .success {
+            text-align: center;
+            padding: 20px;
+            background: rgba(93, 158, 63, 0.1);
+            border: 2px solid var(--grass);
+            border-radius: 8px;
+            color: var(--grass);
+            font-family: 'Press Start 2P', cursive;
+            font-size: 8px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>SKULL <span class="skull"> skull </span></h1>
+            <p>Order Confirmation</p>
+        </div>
+
+        <div class="content">
+            <div id="loading" class="loading">
+                <i class="fa fa-spinner fa-spin"></i> Loading order details...
+            </div>
+
+            <div id="error-message" class="error" style="display: none;">
+                Failed to load order. Please try again.
+            </div>
+
+            <div id="success-message" class="success" style="display: none;">
+                Order created successfully!
+            </div>
+
+            <div id="order-content" style="display: none;">
+                <div class="order-info">
+                    <h2>Order Information</h2>
+                    <div class="order-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Order Number</span>
+                            <span class="detail-value" id="order-number">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Date</span>
+                            <span class="detail-value" id="order-date">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Payment Method</span>
+                            <span class="detail-value" id="payment-method">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Status</span>
+                            <span class="detail-value" id="order-status">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="items-section">
+                    <h2>Order Items</h2>
+                    <div id="items-list"></div>
+                </div>
+
+                <div class="totals">
+                    <div class="total-row">
+                        <span>Subtotal</span>
+                        <span id="subtotal">-</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Shipping</span>
+                        <span id="shipping">-</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Tax</span>
+                        <span id="tax">-</span>
+                    </div>
+                    <div class="total-row grand">
+                        <span>Total</span>
+                        <span id="total">-</span>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <a href="skull-combined.html" class="btn primary">Continue Shopping</a>
+                    <a href="profile.html" class="btn secondary">View Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="simple-api.js"></script>
+    <script>
+        (async function() {
+            const loading = document.getElementById('loading');
+            const errorMessage = document.getElementById('error-message');
+            const successMessage = document.getElementById('success-message');
+            const orderContent = document.getElementById('order-content');
+
+            // Get order ID from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderId = urlParams.get('orderId');
+
+            // Check if user is authenticated
+            if (!isAuthenticated()) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // If no order ID, try to create a test order
+            if (!orderId) {
+                await createTestOrder();
+                return;
+            }
+
+            // Load existing order
+            await loadOrder(orderId);
+
+            async function createTestOrder() {
+                try {
+                    // Create a test order
+                    const orderData = {
+                        items: [
+                            {
+                                id: 1,
+                                name: 'SKULL T-Shirt',
+                                price: 599,
+                                quantity: 2,
+                                category: 'TOPS',
+                                sku: 'SKULL-TS-001'
+                            }
+                        ],
+                        paymentMethod: 'COD',
+                        shippingAddress: {
+                            fullName: 'Test User',
+                            phone: '+1234567890',
+                            email: 'test@example.com',
+                            line1: '123 Test Street',
+                            city: 'Test City',
+                            state: 'Test State',
+                            pincode: '123456',
+                            country: 'India'
+                        }
+                    };
+
+                    const order = await createOrder(orderData);
+                    
+                    // Show success message
+                    successMessage.style.display = 'block';
+                    
+                    // Display order details
+                    displayOrder(order);
+                    
+                    // Update URL with order ID
+                    window.history.replaceState({}, '', `?orderId=${order.id}`);
+
+                } catch (error) {
+                    console.error('Failed to create order:', error);
+                    errorMessage.style.display = 'block';
+                    errorMessage.textContent = 'Failed to create order: ' + error.message;
+                } finally {
+                    loading.style.display = 'none';
+                }
+            }
+
+            async function loadOrder(orderId) {
+                try {
+                    // For now, create a test order since we don't have a get order by ID endpoint
+                    await createTestOrder();
+                    
+                } catch (error) {
+                    console.error('Failed to load order:', error);
+                    errorMessage.style.display = 'block';
+                    errorMessage.textContent = 'Failed to load order: ' + error.message;
+                } finally {
+                    loading.style.display = 'none';
+                }
+            }
+
+            function displayOrder(order) {
+                // Set order details
+                document.getElementById('order-number').textContent = order.orderNumber || order.id;
+                document.getElementById('order-date').textContent = new Date(order.createdAt || Date.now()).toLocaleDateString();
+                document.getElementById('payment-method').textContent = order.payment?.method?.toUpperCase() || 'COD';
+                document.getElementById('order-status').textContent = order.status || 'Processing';
+
+                // Display items
+                const itemsList = document.getElementById('items-list');
+                itemsList.innerHTML = order.items.map(item => `
+                    <div class="item">
+                        <div class="item-image"> skull </div>
+                        <div class="item-details">
+                            <div class="item-name">${item.name}</div>
+                            <div class="item-price">Rs. ${item.price}</div>
+                            <div class="item-quantity">Quantity: ${item.quantity}</div>
+                        </div>
+                    </div>
+                `).join('');
+
+                // Calculate and display totals
+                const subtotal = order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const shipping = subtotal >= 999 ? 0 : 99;
+                const tax = Math.round(subtotal * 0.18);
+                const total = subtotal + shipping + tax;
+
+                document.getElementById('subtotal').textContent = `Rs. ${subtotal}`;
+                document.getElementById('shipping').textContent = shipping === 0 ? 'FREE' : `Rs. ${shipping}`;
+                document.getElementById('tax').textContent = `Rs. ${tax}`;
+                document.getElementById('total').textContent = `Rs. ${total}`;
+
+                // Show order content
+                orderContent.style.display = 'block';
+            }
+        })();
+    </script>
+</body>
+</html>

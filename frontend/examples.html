@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Integration Examples - SKULL</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .example {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .code {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        .info { color: #17a2b8; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        .response {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>🦴 SKULL API Integration Examples</h1>
+    
+    <div class="example">
+        <h2>1. Login Example</h2>
+        <div class="code">
+async function loginExample() {
+    try {
+        const result = await api.login('user@example.com', 'password123');
+        console.log('Login successful:', result);
+        
+        // Token is automatically stored in localStorage
+        // User data is available in result.user
+    } catch (error) {
+        console.error('Login failed:', api.handleError(error));
+    }
+}
+        </div>
+        <button onclick="testLogin()">Test Login</button>
+        <div id="loginResponse" class="response"></div>
+    </div>
+
+    <div class="example">
+        <h2>2. Get User Profile Example</h2>
+        <div class="code">
+async function getProfileExample() {
+    try {
+        const user = await api.getProfile();
+        console.log('User profile:', user);
+        
+        // User data includes: id, email, name, phone, etc.
+    } catch (error) {
+        console.error('Profile fetch failed:', api.handleError(error));
+    }
+}
+        </div>
+        <button onclick="testProfile()">Test Profile</button>
+        <div id="profileResponse" class="response"></div>
+    </div>
+
+    <div class="example">
+        <h2>3. Get Orders Example</h2>
+        <div class="code">
+async function getOrdersExample() {
+    try {
+        const orders = await api.getOrders();
+        console.log('User orders:', orders);
+        
+        // Orders array with order details, items, status, etc.
+    } catch (error) {
+        console.error('Orders fetch failed:', api.handleError(error));
+    }
+}
+        </div>
+        <button onclick="testOrders()">Test Orders</button>
+        <div id="ordersResponse" class="response"></div>
+    </div>
+
+    <div class="example">
+        <h2>4. Create Order Example</h2>
+        <div class="code">
+async function createOrderExample() {
+    try {
+        const orderData = {
+            items: [
+                {
+                    id: 1,
+                    name: 'Skull T-Shirt',
+                    price: 599,
+                    quantity: 2,
+                    category: 'TOPS'
+                }
+            ],
+            totalAmount: 1198,
+            paymentMethod: 'COD'
+        };
+        
+        const order = await api.createOrder(orderData);
+        console.log('Order created:', order);
+        
+        // Returns order confirmation with ID and status
+    } catch (error) {
+        console.error('Order creation failed:', api.handleError(error));
+    }
+}
+        </div>
+        <button onclick="testCreateOrder()">Test Create Order</button>
+        <div id="createOrderResponse" class="response"></div>
+    </div>
+
+    <div class="example">
+        <h2>5. Update Profile Example</h2>
+        <div class="code">
+async function updateProfileExample() {
+    try {
+        const updateData = {
+            name: 'John Doe',
+            phone: '+1234567890',
+            firstName: 'John',
+            lastName: 'Doe'
+        };
+        
+        const updatedUser = await api.updateProfile(updateData);
+        console.log('Profile updated:', updatedUser);
+        
+        // Returns updated user data
+    } catch (error) {
+        console.error('Profile update failed:', api.handleError(error));
+    }
+}
+        </div>
+        <button onclick="testUpdateProfile()">Test Update Profile</button>
+        <div id="updateProfileResponse" class="response"></div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="api-utils.js"></script>
+    <script>
+        async function testLogin() {
+            const responseDiv = document.getElementById('loginResponse');
+            try {
+                // Test with demo credentials
+                const result = await api.login('test@example.com', 'password123');
+                responseDiv.innerHTML = `<span class="success">✅ Login successful!</span><br>
+                    <strong>Token:</strong> ${api.getToken().substring(0, 20)}...<br>
+                    <strong>User:</strong> ${JSON.stringify(result.user, null, 2)}`;
+                responseDiv.className = 'response success';
+            } catch (error) {
+                responseDiv.innerHTML = `<span class="error">❌ Login failed:</span> ${api.handleError(error)}`;
+                responseDiv.className = 'response error';
+            }
+        }
+
+        async function testProfile() {
+            const responseDiv = document.getElementById('profileResponse');
+            try {
+                const user = await api.getProfile();
+                responseDiv.innerHTML = `<span class="success">✅ Profile fetched!</span><br>
+                    <strong>User:</strong> ${JSON.stringify(user, null, 2)}`;
+                responseDiv.className = 'response success';
+            } catch (error) {
+                responseDiv.innerHTML = `<span class="error">❌ Profile fetch failed:</span> ${api.handleError(error)}`;
+                responseDiv.className = 'response error';
+            }
+        }
+
+        async function testOrders() {
+            const responseDiv = document.getElementById('ordersResponse');
+            try {
+                const orders = await api.getOrders();
+                responseDiv.innerHTML = `<span class="success">✅ Orders fetched!</span><br>
+                    <strong>Orders count:</strong> ${orders.length}<br>
+                    <strong>First order:</strong> ${JSON.stringify(orders[0] || 'No orders', null, 2)}`;
+                responseDiv.className = 'response success';
+            } catch (error) {
+                responseDiv.innerHTML = `<span class="error">❌ Orders fetch failed:</span> ${api.handleError(error)}`;
+                responseDiv.className = 'response error';
+            }
+        }
+
+        async function testCreateOrder() {
+            const responseDiv = document.getElementById('createOrderResponse');
+            try {
+                const orderData = {
+                    items: [
+                        {
+                            id: 1,
+                            name: 'Test Product',
+                            price: 599,
+                            quantity: 1,
+                            category: 'TOPS'
+                        }
+                    ],
+                    totalAmount: 599,
+                    paymentMethod: 'COD'
+                };
+                
+                const order = await api.createOrder(orderData);
+                responseDiv.innerHTML = `<span class="success">✅ Order created!</span><br>
+                    <strong>Order ID:</strong> ${order.id}<br>
+                    <strong>Status:</strong> ${order.status}`;
+                responseDiv.className = 'response success';
+            } catch (error) {
+                responseDiv.innerHTML = `<span class="error">❌ Order creation failed:</span> ${api.handleError(error)}`;
+                responseDiv.className = 'response error';
+            }
+        }
+
+        async function testUpdateProfile() {
+            const responseDiv = document.getElementById('updateProfileResponse');
+            try {
+                const updateData = {
+                    name: 'Test User Updated',
+                    phone: '+1234567890'
+                };
+                
+                const updatedUser = await api.updateProfile(updateData);
+                responseDiv.innerHTML = `<span class="success">✅ Profile updated!</span><br>
+                    <strong>Updated user:</strong> ${JSON.stringify(updatedUser, null, 2)}`;
+                responseDiv.className = 'response success';
+            } catch (error) {
+                responseDiv.innerHTML = `<span class="error">❌ Profile update failed:</span> ${api.handleError(error)}`;
+                responseDiv.className = 'response error';
+            }
+        }
+
+        // Show current API configuration
+        console.log('🔧 API Configuration:');
+        console.log('Environment:', window.API_CONFIG.getEnvironment());
+        console.log('API Base URL:', window.API_CONFIG.getApiBase());
+        console.log('Current Token:', api.getToken() ? 'Set' : 'Not set');
+    </script>
+</body>
+</html>

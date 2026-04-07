@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test API Integration - SKULL</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .code {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        .info { color: #17a2b8; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        .response {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            white-space: pre-wrap;
+        }
+        input {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>SKULL Backend API Testing</h1>
+    
+    <div class="test-section">
+        <h2>API Configuration</h2>
+        <div id="configInfo" class="info"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>1. Test Login</h2>
+        <div>
+            <input type="email" id="testEmail" placeholder="Email" value="test@example.com">
+            <input type="password" id="testPassword" placeholder="Password" value="password123">
+            <button onclick="testLogin()">Login</button>
+            <button onclick="clearToken()">Clear Token</button>
+        </div>
+        <div id="loginResponse" class="response"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Test Get Profile</h2>
+        <button onclick="testProfile()">Get Profile</button>
+        <div id="profileResponse" class="response"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>3. Test Get Orders</h2>
+        <button onclick="testOrders()">Get Orders</button>
+        <div id="ordersResponse" class="response"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>4. Test Create Order</h2>
+        <button onclick="testCreateOrder()">Create Test Order</button>
+        <div id="createOrderResponse" class="response"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>5. Token Status</h2>
+        <button onclick="checkToken()">Check Token Status</button>
+        <div id="tokenResponse" class="response"></div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="api-utils.js"></script>
+    <script>
+        // Show API configuration
+        function showConfig() {
+            const configDiv = document.getElementById('configInfo');
+            configDiv.innerHTML = `
+                <strong>Environment:</strong> ${window.API_CONFIG.getEnvironment()}<br>
+                <strong>API Base URL:</strong> ${window.API_CONFIG.getApiBase()}<br>
+                <strong>Current Token:</strong> ${window.api.getToken() ? 'Set' : 'Not set'}<br>
+                <strong>Current User:</strong> ${localStorage.getItem('skullUser') ? 'Logged in' : 'Not logged in'}
+            `;
+        }
+
+        async function testLogin() {
+            const responseDiv = document.getElementById('loginResponse');
+            const email = document.getElementById('testEmail').value;
+            const password = document.getElementById('testPassword').value;
+
+            if (!email || !password) {
+                responseDiv.innerHTML = '<span class="error">Please enter email and password</span>';
+                responseDiv.className = 'response error';
+                return;
+            }
+
+            responseDiv.innerHTML = '<span class="info">Logging in...</span>';
+            responseDiv.className = 'response info';
+
+            try {
+                const result = await window.api.login(email, password);
+                responseDiv.innerHTML = `<span class="success">Login Successful!</span>
+                
+<strong>User:</strong> ${JSON.stringify(result.user, null, 2)}
+<strong>Token:</strong> ${window.api.getToken().substring(0, 50)}...
+
+Order ID: ${result.order?.id || 'No order'}
+Order Status: ${result.order?.status || 'No order'}`;
+                responseDiv.className = 'response success';
+                showConfig();
+            } catch (error) {
+                responseDiv.innerHTML = `<span class="error">Login Failed:</span> ${error.message}`;
+                responseDiv.className = 'response error';
+                showConfig();
+            }
+        }
+
+        async function testProfile() {
+            const responseDiv = document.getElementById('profileResponse');
+            
+            if (!window.api.getToken()) {
+                responseDiv.innerHTML = '<span class="error">Please login first</span>';
+                responseDiv.className = 'response error';
+                return;
+            }
+
+            responseDiv.innerHTML = '<span class="info">Fetching profile...</span>';
+            responseDiv.className = 'response info';
+
+            try {
+                const user = await window.api.getProfile();
+                responseDiv.innerHTML = `<span class="success">Profile Fetched!</span>
+
+<strong>User Data:</strong> ${JSON.stringify(user, null, 2)}`;
+                responseDiv.className = 'response success';
+            } catch (error) {
+                responseDiv.innerHTML = `<span class="error">Profile Fetch Failed:</span> ${error.message}`;
+                responseDiv.className = 'response error';
+            }
+        }
+
+        async function testOrders() {
+            const responseDiv = document.getElementById('ordersResponse');
+            
+            if (!window.api.getToken()) {
+                responseDiv.innerHTML = '<span class="error">Please login first</span>';
+                responseDiv.className = 'response error';
+                return;
+            }
+
+            responseDiv.innerHTML = '<span class="info">Fetching orders...</span>';
+            responseDiv.className = 'response info';
+
+            try {
+                const orders = await window.api.getOrders();
+                responseDiv.innerHTML = `<span class="success">Orders Fetched!</span>
+
+<strong>Orders Count:</strong> ${orders.length}
+
+<strong>Orders:</strong> ${JSON.stringify(orders, null, 2)}`;
+                responseDiv.className = 'response success';
+            } catch (error) {
+                responseDiv.innerHTML = `<span class="error">Orders Fetch Failed:</span> ${error.message}`;
+                responseDiv.className = 'response error';
+            }
+        }
+
+        async function testCreateOrder() {
+            const responseDiv = document.getElementById('createOrderResponse');
+            
+            if (!window.api.getToken()) {
+                responseDiv.innerHTML = '<span class="error">Please login first</span>';
+                responseDiv.className = 'response error';
+                return;
+            }
+
+            responseDiv.innerHTML = '<span class="info">Creating order...</span>';
+            responseDiv.className = 'response info';
+
+            try {
+                const orderData = {
+                    items: [
+                        {
+                            id: 1,
+                            name: 'SKULL T-Shirt',
+                            price: 599,
+                            quantity: 2,
+                            category: 'TOPS',
+                            sku: 'SKULL-TS-001',
+                            image: 'tshirt.jpg'
+                        }
+                    ],
+                    paymentMethod: 'COD',
+                    shippingAddress: {
+                        fullName: 'Test User',
+                        phone: '+1234567890',
+                        email: 'test@example.com',
+                        line1: '123 Test Street',
+                        city: 'Test City',
+                        state: 'Test State',
+                        pincode: '123456',
+                        country: 'India'
+                    }
+                };
+                
+                const order = await window.api.createOrder(orderData);
+                responseDiv.innerHTML = `<span class="success">Order Created!</span>
+
+<strong>Order ID:</strong> ${order.id}
+<strong>Order Number:</strong> ${order.orderNumber}
+<strong>Status:</strong> ${order.status}
+<strong>Total:</strong> ${order.total}
+
+<strong>Full Order:</strong> ${JSON.stringify(order, null, 2)}`;
+                responseDiv.className = 'response success';
+            } catch (error) {
+                responseDiv.innerHTML = `<span class="error">Order Creation Failed:</span> ${error.message}`;
+                responseDiv.className = 'response error';
+            }
+        }
+
+        function clearToken() {
+            window.api.clearToken();
+            const responseDiv = document.getElementById('loginResponse');
+            responseDiv.innerHTML = '<span class="info">Token cleared</span>';
+            responseDiv.className = 'response info';
+            showConfig();
+        }
+
+        function checkToken() {
+            const responseDiv = document.getElementById('tokenResponse');
+            const token = window.api.getToken();
+            const user = localStorage.getItem('skullUser');
+
+            if (token) {
+                try {
+                    // Decode JWT token to show payload
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    responseDiv.innerHTML = `<span class="success">Token is valid!</span>
+
+<strong>Token:</strong> ${token.substring(0, 50)}...
+<strong>Expires:</strong> ${new Date(payload.exp * 1000).toLocaleString()}
+<strong>User ID:</strong> ${payload.userId}
+
+<strong>User Data:</strong> ${user}`;
+                } catch (error) {
+                    responseDiv.innerHTML = `<span class="error">Invalid token format</span>`;
+                }
+            } else {
+                responseDiv.innerHTML = '<span class="error">No token found</span>';
+            }
+            responseDiv.className = token ? 'response success' : 'response error';
+        }
+
+        // Initialize
+        showConfig();
+    </script>
+</body>
+</html>

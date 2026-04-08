@@ -616,13 +616,14 @@
       return;
     }
 
-    let currentUser;
+    let currentUser = sessionUser; // Start with the session user from localStorage
+    
+    // Try to fetch fresh user data, but don't fail if it doesn't work
     try {
       currentUser = await SKULLStore.getCurrentUserRecord();
     } catch (error) {
-      SKULLStore.logout();
-      window.location.replace("login.html?redirect=checkout.html");
-      return;
+      console.warn("Could not fetch fresh user data, using cached session:", error);
+      // Keep using the sessionUser from localStorage instead of redirecting
     }
 
     const state = {
@@ -664,8 +665,19 @@
     }
 
     function prefillShipping() {
-      document.getElementById("firstName").value = currentUser.firstName || "";
-      document.getElementById("lastName").value = currentUser.lastName || "";
+      // Handle different user data structures
+      let firstName = currentUser.firstName || "";
+      let lastName = currentUser.lastName || "";
+      
+      // If we don't have firstName/lastName but have a name, split it
+      if (!firstName && !lastName && currentUser.name) {
+        const nameParts = SKULLStore.splitName(currentUser.name);
+        firstName = nameParts.firstName;
+        lastName = nameParts.lastName;
+      }
+      
+      document.getElementById("firstName").value = firstName;
+      document.getElementById("lastName").value = lastName;
       document.getElementById("phone").value = currentUser.phone || "";
       document.getElementById("email").value = currentUser.email || "";
     }

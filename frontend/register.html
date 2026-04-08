@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - SKULL Streetwear</title>
+    <title>Register - SKULL Streetwear</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Bebas+Neue&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
@@ -28,13 +28,13 @@
             justify-content:center;
             padding:20px;
         }
-        .login-container{
+        .register-container{
             background:var(--parchment);
             border:3px solid var(--ink);
             border-radius:8px;
             padding:40px;
             box-shadow:8px 8px 0 var(--stone);
-            max-width:400px;
+            max-width:450px;
             width:100%;
         }
         h2{
@@ -67,6 +67,13 @@
         input:focus{
             outline:none;
             border-color:var(--grass);
+        }
+        .form-row{
+            display:flex;
+            gap:15px;
+        }
+        .form-row .form-group{
+            flex:1;
         }
         button{
             width:100%;
@@ -111,48 +118,69 @@
             font-size:12px;
             text-align:center;
         }
-        .register-link{
+        .login-link{
             text-align:center;
             margin-top:20px;
             font-size:12px;
             color:var(--muted);
         }
-        .register-link a{
+        .login-link a{
             color:var(--grass);
             text-decoration:none;
             font-weight:600;
         }
-        .register-link a:hover{
+        .login-link a:hover{
             color:var(--grass-dark);
         }
     </style>
 </head>
 <body>
 
-<div class="login-container">
-    <h2>Login to SKULL</h2>
+<div class="register-container">
+    <h2>Join SKULL</h2>
 
     <div id="message-container" class="message-container"></div>
 
-    <form id="login-form" novalidate>
+    <form id="register-form" novalidate>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="firstName">First Name</label>
+                <input type="text" id="firstName" placeholder="First name" required autocomplete="given-name">
+            </div>
+            <div class="form-group">
+                <label for="lastName">Last Name</label>
+                <input type="text" id="lastName" placeholder="Last name" required autocomplete="family-name">
+            </div>
+        </div>
+
         <div class="form-group">
             <label for="email">Email</label>
             <input type="email" id="email" placeholder="Enter your email" required autocomplete="email">
         </div>
 
         <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" placeholder="Enter your password" required autocomplete="current-password">
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" placeholder="Phone number (optional)" autocomplete="tel">
         </div>
 
-        <button type="submit" id="login-button">
-            <i class="fa fa-sign-in-alt"></i> Login
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Create a password" required autocomplete="new-password">
+        </div>
+
+        <div class="form-group">
+            <label for="confirmPassword">Confirm Password</label>
+            <input type="password" id="confirmPassword" placeholder="Confirm your password" required autocomplete="new-password">
+        </div>
+
+        <button type="submit" id="register-button">
+            <i class="fa fa-user-plus"></i> Create Account
         </button>
     </form>
 
-    <div class="register-link">
-        Don't have an account?
-        <a href="register.html">Register</a>
+    <div class="login-link">
+        Already have an account?
+        <a href="login.html">Login</a>
     </div>
 </div>
 
@@ -160,10 +188,14 @@
 <script src="api-utils.js"></script>
 <script src="store-utils.js"></script>
 <script>
-const form = document.getElementById("login-form");
+const form = document.getElementById("register-form");
+const firstNameInput = document.getElementById("firstName");
+const lastNameInput = document.getElementById("lastName");
 const emailInput = document.getElementById("email");
+const phoneInput = document.getElementById("phone");
 const passwordInput = document.getElementById("password");
-const loginButton = document.getElementById("login-button");
+const confirmPasswordInput = document.getElementById("confirmPassword");
+const registerButton = document.getElementById("register-button");
 const messageContainer = document.getElementById("message-container");
 
 function showMessage(type, text) {
@@ -186,57 +218,6 @@ function getApiBase() {
     return window.location.origin.replace(/\/$/, "");
 }
 
-function sanitizeRedirect(target) {
-    const fallback = "profile.html";
-    const value = String(target || "").trim();
-
-    if (!value || value.includes("://") || value.startsWith("//") || value.startsWith("/") || value.startsWith("javascript:")) {
-        return fallback;
-    }
-
-    return value;
-}
-
-function getRedirectTarget() {
-    const params = new URLSearchParams(window.location.search);
-    return sanitizeRedirect(params.get("redirect"));
-}
-
-function normalizeSessionUser(user, email) {
-    if (window.SKULLStore && typeof window.SKULLStore.createSessionUser === "function") {
-        return window.SKULLStore.createSessionUser({
-            ...user,
-            email
-        });
-    }
-
-    return {
-        id: String(user?.id || user?._id || ""),
-        name: String(user?.name || email.split("@")[0] || "User"),
-        email,
-        firstName: String(user?.firstName || ""),
-        lastName: String(user?.lastName || ""),
-        phone: String(user?.phone || ""),
-        role: String(user?.role || "customer"),
-        createdAt: user?.createdAt || null,
-        updatedAt: user?.updatedAt || null
-    };
-}
-
-function persistLegacyUser(sessionUser) {
-    const users = JSON.parse(localStorage.getItem("skullUsers") || "[]");
-    const sessionId = String(sessionUser.id || "");
-    const index = users.findIndex((user) => String(user.id || user._id || "") === sessionId);
-
-    if (index >= 0) {
-        users[index] = { ...users[index], ...sessionUser };
-    } else {
-        users.push(sessionUser);
-    }
-
-    localStorage.setItem("skullUsers", JSON.stringify(users));
-}
-
 async function fetchJson(response) {
     const text = await response.text();
     try {
@@ -246,104 +227,115 @@ async function fetchJson(response) {
     }
 }
 
-async function loginWithLegacyApi(email, password) {
-    const response = await fetch(`${getApiBase()}/api/login`, {
+async function registerWithLegacyApi(userData) {
+    const response = await fetch(`${getApiBase()}/api/register`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify(userData)
     });
 
     const data = await fetchJson(response);
     if (!response.ok) {
-        throw new Error(data.error || data.message || "Login failed");
+        throw new Error(data.error || data.message || "Registration failed");
     }
 
-    let user = data.user || null;
-    if (!user && data.token) {
-        try {
-            const profileResponse = await fetch(`${getApiBase()}/api/profile`, {
-                headers: {
-                    Authorization: `Bearer ${data.token}`
-                }
-            });
-            const profileData = await fetchJson(profileResponse);
-            if (profileResponse.ok && profileData.user) {
-                user = profileData.user;
-            }
-        } catch (error) {
-            console.warn("Profile fetch after login failed:", error);
-        }
-    }
-
-    const sessionUser = normalizeSessionUser(user, email);
-    localStorage.setItem("skullToken", data.token || "");
-    localStorage.setItem("skullUser", JSON.stringify(sessionUser));
-    persistLegacyUser(sessionUser);
-
-    return sessionUser;
+    return data;
 }
 
-async function login(email, password) {
+async function register(userData) {
     try {
         // Use new API utilities first
-        if (window.api && typeof window.api.login === "function") {
-            const result = await window.api.login(email, password);
-            const sessionUser = normalizeSessionUser(result?.user, email);
-            persistLegacyUser(sessionUser);
-            return sessionUser;
+        if (window.api && typeof window.api.register === "function") {
+            return await window.api.register(userData);
         }
     } catch (error) {
-        console.warn("New API login failed, trying legacy route:", error);
+        console.warn("New API registration failed, trying legacy route:", error);
     }
 
     // Fallback to legacy method
-    if (window.SKULLStore && typeof window.SKULLStore.login === "function") {
+    if (window.SKULLStore && typeof window.SKULLStore.register === "function") {
         try {
-            const result = await window.SKULLStore.login(email, password);
-            const sessionUser = normalizeSessionUser(result?.user, email);
-            persistLegacyUser(sessionUser);
-            return sessionUser;
+            return await window.SKULLStore.register(userData);
         } catch (error) {
-            console.warn("Primary auth route failed, trying legacy route:", error);
+            console.warn("Primary registration route failed, trying legacy route:", error);
         }
     }
 
-    return loginWithLegacyApi(email, password);
+    return registerWithLegacyApi(userData);
 }
 
-async function handleLogin(event) {
+function validateForm() {
+    const firstName = firstNameInput.value.trim();
+    const lastName = lastNameInput.value.trim();
+    const email = emailInput.value.trim();
+    const phone = phoneInput.value.trim();
+    const password = passwordInput.value;
+    const confirmPassword = confirmPasswordInput.value;
+
+    if (!firstName || !lastName) {
+        showMessage("error", "Please enter your full name");
+        return false;
+    }
+
+    if (!email) {
+        showMessage("error", "Please enter your email");
+        return false;
+    }
+
+    if (!email.includes("@") || !email.includes(".")) {
+        showMessage("error", "Please enter a valid email address");
+        return false;
+    }
+
+    if (!password || password.length < 6) {
+        showMessage("error", "Password must be at least 6 characters long");
+        return false;
+    }
+
+    if (password !== confirmPassword) {
+        showMessage("error", "Passwords do not match");
+        return false;
+    }
+
+    return true;
+}
+
+async function handleRegister(event) {
     event.preventDefault();
     messageContainer.innerHTML = "";
 
-    const email = emailInput.value.trim().toLowerCase();
-    const password = passwordInput.value;
-
-    if (!email || !password) {
-        showMessage("error", "Please fill in all fields");
+    if (!validateForm()) {
         return;
     }
 
-    loginButton.disabled = true;
-    loginButton.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Logging in...';
+    const userData = {
+        name: `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`,
+        email: emailInput.value.trim().toLowerCase(),
+        phone: phoneInput.value.trim(),
+        password: passwordInput.value
+    };
+
+    registerButton.disabled = true;
+    registerButton.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Creating account...';
 
     try {
-        await login(email, password);
-        showMessage("success", "Login successful! Redirecting...");
+        await register(userData);
+        showMessage("success", "Account created successfully! Redirecting to login...");
         setTimeout(() => {
-            window.location.href = getRedirectTarget();
-        }, 900);
+            window.location.href = "login.html";
+        }, 2000);
     } catch (error) {
-        showMessage("error", error.message || "Connection error. Please try again.");
-        console.error("Login error:", error);
+        showMessage("error", error.message || "Registration failed. Please try again.");
+        console.error("Registration error:", error);
     } finally {
-        loginButton.disabled = false;
-        loginButton.innerHTML = '<i class="fa fa-sign-in-alt"></i> Login';
+        registerButton.disabled = false;
+        registerButton.innerHTML = '<i class="fa fa-user-plus"></i> Create Account';
     }
 }
 
-form.addEventListener("submit", handleLogin);
+form.addEventListener("submit", handleRegister);
 </script>
 
 </body>
